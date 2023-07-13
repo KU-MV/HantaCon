@@ -1,4 +1,4 @@
-const {app, BrowserWindow, dialog, ipcMain} = require('electron');
+const {app, BrowserWindow, dialog, ipcMain, shell} = require('electron');
 const { Worker } = require('worker_threads');
 const path = require('path');
 const log = require('electron-log')
@@ -73,6 +73,11 @@ app.whenReady().then(() => {
     })
   });
 
+  ipcMain.on('baseOpen', () => {
+    log.info('baseOpen')
+    shell.openPath(base_path)
+  })
+  
   ipcMain.on('runShell', (event, items) => {
     log.info('아이템: ',items)
     if ( items.value.length > 0 ){

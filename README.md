@@ -25,3 +25,13 @@ npm install @electron/remote
 npm install electron-log
 yarn add -D worker-loader
 yarn add -D worker-plugin
+
+
+
+$HOME/.local/share/applications/start.desktop
+#!/usr/bin/env xdg-open
+[Desktop Entry]
+Type=Application
+Exec=/home/jwsonglab/Desktop/kmpark/git/Hantacon/dist/linux-unpacked/start-electron
+Name=start
+Terminal=true
