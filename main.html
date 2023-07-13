@@ -37,6 +37,12 @@
         <img src="./img/Run.png" style="width: 30; height: 30; float:left;">
         <label style="font-size: 18; margin-left: 5;">Run</label>
       </button>
+
+      <button class="folder" style="width: 150; height: 45; display: flex; align-items: center; float:left; margin-left: 15;">
+        <img src="./img/folder.png" style="width: 30; height: 30; float:left;">
+        <label style="font-size: 18; margin-left: 5;">folder</label>
+      </button>
+
     </div>
 
     <div style="margin-top: 20;">
@@ -75,6 +81,10 @@
       file_find.runShell(chkItems());
     });
 
+    document.querySelector('button.folder').addEventListener('click', () => {
+      file_find.openBase();
+    });
+    
     function progress_add(){
       document.querySelector('progress').value += 1
     }
