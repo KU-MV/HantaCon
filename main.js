@@ -31,14 +31,14 @@ app.whenReady().then(() => {
       preload: path.join(__dirname, 'preload.js'),
       nodeIntegration: true,
       nodeIntegrationInWorker: true,
-      autoHideMenuBar: true
-    }
+    },
+    autoHideMenuBar: true
   });
   win.setSize(1200, 850)
   win.loadFile('main.html');
   const myWorker = new Worker(path.join(__dirname, 'worker.js'));
   const q_list = []
-  
+  win.webContents.executeJavaScript('document.querySelector("div.config input#basePath").value = "' + base_path +'"') 
 
   function ref_init() {
     for ( let ref in refs ) {

@@ -8,7 +8,7 @@
     "deploy:osx": "electron-builder --mac",
     "build:linux": "npm run build:linux32 && npm run build:linux64",
     "build:linux32": "electron-builder --linux --ia32",
-    "build:linux64": "electron-builder --linux --x64 -p --win",
+    "build:linux64": "electron-builder --linux --x64 -p never",
     "deploy:win": "npm run deploy:win32 && npm run deploy:win64",
     "deploy:win32": "electron-builder --win nsis:ia32",
     "deploy:win64": "electron-builder --win nsis:x64"
@@ -42,10 +42,16 @@
       "createDesktopShortcut": true
     },
     "directories": {
-      "buildResources": "./resources/installer/",
-      "output": "./dist/",
-      "app": "."
-    }
+      "buildResources": "resources"
+    },
+    "files": [
+      "./main.js",
+      "./main.html",
+      "./preload.js",
+      "./jquery-3.7.0.min.js",
+      "./worker.js",
+      "./img/*"
+    ]
   },
   "author": "",
   "license": "ISC",

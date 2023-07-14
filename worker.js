@@ -1,9 +1,7 @@
 const { parentPort } = require('worker_threads');
 const log = require('electron-log')
 const { spawnSync } = require("child_process");
-const base_path = process.env.INIT_CWD
-const ref_path = base_path + '/ref/'
-const result_path = base_path + '/result/'
+
 
 parentPort.on('message', (items) => {
   //log.info('수신: ',item)
@@ -11,6 +9,9 @@ parentPort.on('message', (items) => {
   if ( items.value.length > 0 ){
     for ( let index in items.value ){
         let item = items.value[index]
+        let base_path = item['basePath']
+        let ref_path = base_path + '/ref/'
+        let result_path = base_path + '/result/'
         let itemId = item["itemId"]
         let value = item["value"]
         let value_split = String(value).split('/')
@@ -25,12 +26,14 @@ parentPort.on('message', (items) => {
         log.info(value)
         log.info(value_split)
         log.info(value_split2)
-        result = spawnSync('micromamba', ['run', '-n', 'KU-ONT-Hantavirus-consensus', 'nextflow', './main.nf', '--fastq', value, '--prefix', value_split2[0], '--outdir', result_path + value_split2[0], '--L', option_L, '--M', option_M, '--S', option_S]);
+
+        result = spawnSync('micromamba', ['run', '-n', 'KU-ONT-Hantavirus-consensus', 'nextflow', '/home/jwsonglab/Desktop/kmpark/git/Hantacon/dist/linux-unpacked/main.nf', '--fastq', value, '--prefix', value_split2[0], '--outdir', result_path + value_split2[0], '--L', option_L, '--M', option_M, '--S', option_S]);
+
         if (result.error) {
           log.info(result.error)
         } else {
           //log.info(result.stdout.toString())
-          log.info('완료: ',item)
+          log.info('완료: ', item)
         }
     
         parentPort.postMessage(item); 
