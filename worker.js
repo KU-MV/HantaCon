@@ -1,6 +1,7 @@
 const { parentPort } = require('worker_threads');
 const log = require('electron-log')
 const { spawnSync } = require("child_process");
+const { app } = require('electron');
 
 
 parentPort.on('message', (items) => {
@@ -27,16 +28,25 @@ parentPort.on('message', (items) => {
         log.info(value_split)
         log.info(value_split2)
 
-        result = spawnSync('micromamba', ['run', '-n', 'KU-ONT-Hantavirus-consensus', 'nextflow', '/home/jwsonglab/Desktop/kmpark/git/Hantacon/dist/linux-unpacked/main.nf', '--fastq', value, '--prefix', value_split2[0], '--outdir', result_path + value_split2[0], '--L', option_L, '--M', option_M, '--S', option_S]);
-
+        let app = 'micromamba'
+        let args = ['run', '-n', 'KU-ONT-Hantavirus-consensus', 'nextflow', '-c', base_path+'/nextflow.config', 'run', base_path + '/main.nf', '--fastq', value, '--prefix', value_split2[0], '--outdir', result_path + value_split2[0], '--L', option_L, '--M', option_M, '--S', option_S, '--low-cov-threshold', '10']
+        result = spawnSync(app, args, {encoding: 'utf-8', cwd: base_path})//, 
+        let out = result.stdout
+        
         if (result.error) {
           log.info(result.error)
         } else {
           //log.info(result.stdout.toString())
           log.info('완료: ', item)
         }
-    
-        parentPort.postMessage(item); 
+        let obj = {
+          'item': item,
+          'result': result,
+          'app': app,
+          'args': args
+
+        }
+        parentPort.postMessage(obj); 
     }
   }
 

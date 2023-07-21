@@ -89,14 +89,30 @@ app.whenReady().then(() => {
       
       win.webContents.executeJavaScript('elementDisabled(true)')
       //win.webContents.executeJavaScript('document.querySelector("div.loading-container").style.display = "block"')  
-      myWorker.on('message', (result) => {
-        log.info('test: ' ,result)
-        log.info('q_list:',q_list)
-        log.info('q_list.length:',q_list.length)
-        itemId = result["itemId"]
-        value = result["value"]
+      myWorker.on('message', (obj) => {
+        let result = obj['result']
+        let item = obj['item']
+        let app = obj['app']
+        let args = obj['args']
+        //log.info('test: ' ,item)
+        //log.info('q_list:',q_list)
+        //log.info('q_list.length:',q_list.length)
+        log.info('app: ', app)
+        log.info('args: ', args)
+        cmd = app
+        for ( let arg in args ) {
+          cmd += " " + args[arg]
+        }
+        log.info('cmd: ', cmd)
+        log.info('stdin: ', result.stdin)
+        log.info('stdout: ', result.stdout)
+        log.info('stderr: ', result.stderr)
+
+      
+        itemId = item["itemId"]
+        value = item["value"]
         win.webContents.executeJavaScript('setStatus("'+itemId+'","[ 완료 ] ")')
-        q_list.pop(result)
+        q_list.pop(item)
         win.webContents.executeJavaScript('progress_add()')
         if ( q_list.length == 0 ){
           win.webContents.executeJavaScript('elementDisabled(false)')
