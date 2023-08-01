@@ -33,10 +33,10 @@ parentPort.on('message', (items) => {
           'run', '-n', 'KU-ONT-Hantavirus-consensus','nextflow',
           //'-log', '"'+data_path+'/nextflow.log"',
           //'-c', '"'+data_path+'/nextflow.config"',
-          'run', '"'+data_path + '/main.nf"',
+          'run', '"' + data_path + '/main.nf"',
           '--fastq', value,
           '--prefix', value_split2[0],
-          '--outdir', data_path + "/" +value_split2[0],
+          '--outdir', data_path + "/" + value_split2[0],
           '--L', option_L,
           '--M', option_M,
           '--S', option_S,
@@ -57,7 +57,13 @@ parentPort.on('message', (items) => {
           'item': item,
           'result': result,
           'app': app,
-          'args': args
+          'args': args,
+          'bams': {
+            'name': value_split2[0],
+            'L': data_path + "/" + value_split2[0] + "/bams/" + value_split2[0] + "_L.bam",
+            'M': data_path + "/" + value_split2[0] + "/bams/" + value_split2[0] + "_M.bam",
+            'S': data_path + "/" + value_split2[0] + "/bams/" + value_split2[0] + "_S.bam"
+          }
 
         }
         parentPort.postMessage(obj); 

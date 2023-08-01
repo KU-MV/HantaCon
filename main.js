@@ -105,6 +105,12 @@ app.whenReady().then(() => {
         let item = obj['item']
         let app = obj['app']
         let args = obj['args']
+        let bams = obj['bams']
+        let bams_name = bams['name']
+        let bams_L = bams['L']
+        let bams_M = bams['M']
+        let bams_S = bams['S']
+        
         //log.info('test: ' ,item)
         //log.info('q_list:',q_list)
         //log.info('q_list.length:',q_list.length)
@@ -126,7 +132,12 @@ app.whenReady().then(() => {
       
         itemId = item["itemId"]
         value = item["value"]
-        win.webContents.executeJavaScript('setStatus("'+itemId+'","[ 완료 ] ")')
+        if ((fs.existsSync(bams_L)) && (fs.existsSync(bams_M)) && (fs.existsSync(bams_M))){
+          win.webContents.executeJavaScript('setStatus("'+itemId+'","[ 완료 ] ")')
+        } else {
+          win.webContents.executeJavaScript('setStatus("'+itemId+'","[ 실패 ] ")')
+        }
+
         q_list.pop(item)
         win.webContents.executeJavaScript('progress_add()')
         if ( q_list.length == 0 ){
