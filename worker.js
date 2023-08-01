@@ -11,7 +11,7 @@ parentPort.on('message', (items) => {
         let base_path = item['basePath']
         let data_path = item['dataPath']
         let ref_path = base_path + '/ref/'
-        let result_path = base_path + '/result/'
+        let result_path = data_path + '/result/'
         let itemId = item["itemId"]
         let value = item["value"]
         let value_split = String(value).split('/')
@@ -36,7 +36,7 @@ parentPort.on('message', (items) => {
           'run', '"' + data_path + '/main.nf"',
           '--fastq', value,
           '--prefix', value_split2[0],
-          '--outdir', data_path + "/" + value_split2[0],
+          '--outdir', result_path + value_split2[0],
           '--L', option_L,
           '--M', option_M,
           '--S', option_S,
@@ -60,9 +60,9 @@ parentPort.on('message', (items) => {
           'args': args,
           'bams': {
             'name': value_split2[0],
-            'L': data_path + "/" + value_split2[0] + "/bams/" + value_split2[0] + "_L.bam",
-            'M': data_path + "/" + value_split2[0] + "/bams/" + value_split2[0] + "_M.bam",
-            'S': data_path + "/" + value_split2[0] + "/bams/" + value_split2[0] + "_S.bam"
+            'L': result_path + value_split2[0] + "/bams/" + value_split2[0] + "_L.bam",
+            'M': result_path + value_split2[0] + "/bams/" + value_split2[0] + "_M.bam",
+            'S': result_path + value_split2[0] + "/bams/" + value_split2[0] + "_S.bam"
           }
 
         }

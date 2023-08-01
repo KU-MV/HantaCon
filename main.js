@@ -16,7 +16,7 @@ const base_path = appPath
 log.info(base_path)
 
 const ref_path = base_path + '/ref'
-const result_path = base_path + '/result'
+const result_path = data_path + '/result'
 
 log.info(ref_path)
 
