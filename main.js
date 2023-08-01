@@ -3,9 +3,14 @@ const { Worker } = require('worker_threads');
 const path = require('path');
 const log = require('electron-log')
 const appPath = app.isPackaged ? process.execPath.replace('/'+app.getName(),'') : app.getAppPath();
-log.info(process.execPath)
-log.info(app.getAppPath())
+//log.info(process.execPath)
+//log.info(app.getAppPath())
 
+log.info(app.getPath('userData'))
+log.info(app.getPath('home'))
+log.info(app.getPath('desktop'))
+
+const data_path = app.getPath('home') + '/Hantacon'
 
 const base_path = appPath
 log.info(base_path)
@@ -16,6 +21,7 @@ const result_path = base_path + '/result'
 log.info(ref_path)
 
 const fs = require('fs');
+if (!fs.existsSync(data_path)) fs.mkdir(data_path, (error) => error && log.info(error));
 if (!fs.existsSync(ref_path)) fs.mkdir(ref_path, (error) => error && log.info(error));
 if (!fs.existsSync(result_path)) fs.mkdir(result_path, (error) => error && log.info(error));
 const refs = fs.readdirSync(ref_path)
@@ -39,8 +45,9 @@ app.whenReady().then(() => {
   const myWorker = new Worker(path.join(__dirname, 'worker.js'));
   const q_list = []
   win.webContents.executeJavaScript('document.querySelector("div.config input#basePath").value = "' + base_path +'"') 
+  win.webContents.executeJavaScript('document.querySelector("div.config input#dataPath").value = "' + data_path +'"') 
 
-  function ref_init() {
+  function ref_init() {    
     for ( let ref in refs ) {
       let ref_dir = ref_path + '/' + refs[ref]
       //log.info(ref_dir)
@@ -59,9 +66,13 @@ app.whenReady().then(() => {
   }
 
   ref_init()
+  if (!fs.existsSync(data_path+'/main.nf')) fs.copyFile(base_path+'/main.nf', data_path+'/main.nf',(error) => error && log.info(error));
+  if (!fs.existsSync(data_path+'/nextflow.config')) fs.copyFile(base_path+'/nextflow.config', data_path+'/nextflow.config',(error) => error && log.info(error));
+  if (!fs.existsSync(data_path+'/consensus.nf')) fs.copyFile(base_path+'/consensus.nf', data_path+'/consensus.nf',(error) => error && log.info(error));
+
 
   ipcMain.on('openDialog', () => {
-    dialog.showOpenDialog({defaultPath: base_path, properties: ['openFile', 'multiSelections'], filters: [{ name: 'fastq', extensions: ['fastq']} ] }).then((obj) => {
+    dialog.showOpenDialog({defaultPath: data_path, properties: ['openFile', 'multiSelections'], filters: [{ name: 'fastq', extensions: ['fastq']} ] }).then((obj) => {
       log.info(obj.filePaths)
       if ( obj.filePaths.length > 0 ){
         for ( let index in obj.filePaths){
@@ -75,7 +86,7 @@ app.whenReady().then(() => {
 
   ipcMain.on('baseOpen', () => {
     log.info('baseOpen')
-    shell.openPath(base_path)
+    shell.openPath(data_path)
   })
   
   ipcMain.on('runShell', (event, items) => {
@@ -104,9 +115,13 @@ app.whenReady().then(() => {
           cmd += " " + args[arg]
         }
         log.info('cmd: ', cmd)
+        //win.webContents.executeJavaScript('alert("'+cmd+'")')
         log.info('stdin: ', result.stdin)
+        //win.webContents.executeJavaScript('alert("'+result.stdin+'")')
         log.info('stdout: ', result.stdout)
+        //win.webContents.executeJavaScript('alert("'+result.stdout+'")')
         log.info('stderr: ', result.stderr)
+        //win.webContents.executeJavaScript('alert("'+result.stderr+'")')
 
       
         itemId = item["itemId"]

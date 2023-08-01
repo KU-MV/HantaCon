@@ -1,6 +1,6 @@
 <html>
   <head>
-    <title>title</title>
+    <title>Hantacon</title>
   </head>  
   <body>
 
@@ -12,6 +12,7 @@
 
     <div class="config" style="display: none">
         <input id="basePath", type="text", value="">
+        <input id="dataPath", type="text", value="">
     </div>
 
 
@@ -22,32 +23,35 @@
       <progress value="0" max="100" style="height: 25px; width : 100%;"></progress>
     </div>
     
-    <div style="width: 100%; height: 50;">
-      <button class="allSelect" onclick="allSelect()" style="width: 150; height: 45; display: flex; align-items: center; float:left; margin-left: 15;">
+    <div style="width: 100%; height: 50; margin-top: 10; margin-bottom: 10;">
+      <button class="allSelect disabled-event" onclick="allSelect()" style="width: 150; height: 45; display: flex; align-items: center; float:left; margin-left: 15;">
         <img src="./img/selection.jpg" style="width: 30; height: 30; float:left;">
         <label style="font-size: 18; margin-left: 5;">All select</label>
       </button>
 
-      <button class="delete" onclick="deleteItems()" style="width: 150; height: 45; display: flex; align-items: center; float:left; margin-left: 15;">
+      <button class="delete disabled-event" onclick="deleteItems()" style="width: 150; height: 45; display: flex; align-items: center; float:left; margin-left: 15;">
         <img src="./img/delete.png" style="width: 30; height: 30; float:left;">
         <label style="font-size: 18; margin-left: 5;">Items delete</label>
       </button>
 
-      <button class="file" style="width: 150; height: 45; display: flex; align-items: center; float:left; margin-left: 15;">
+      <button class="file disabled-event" style="width: 150; height: 45; display: flex; align-items: center; float:left; margin-left: 15;">
         <img src="./img/Search.png" style="width: 30; height: 30; float:left;">
         <label style="font-size: 18; margin-left: 5;">File find</label>
-      </button>
-
-      <button class="run" style="width: 150; height: 45; display: flex; align-items: center; float:left; margin-left: 15;">
-        <img src="./img/Run.png" style="width: 30; height: 30; float:left;">
-        <label style="font-size: 18; margin-left: 5;">Run</label>
       </button>
 
       <button class="folder" style="width: 150; height: 45; display: flex; align-items: center; float:left; margin-left: 15;">
         <img src="./img/folder.png" style="width: 30; height: 30; float:left;">
         <label style="font-size: 18; margin-left: 5;">folder</label>
       </button>
+      
+      <button class="run disabled-event" style="width: 150; height: 45; display: flex; align-items: center; float:left; margin-left: 15;">
+        <img src="./img/Run.png" style="width: 30; height: 30; float:left;">
+        <label style="font-size: 18; margin-left: 5;">Run</label>
+      </button>
 
+      <label style="margin-left: 15; font-size:18px;"> Threshold
+        <input type="number" class="spinner" id="threshold" min="0" max="9999" step="1" value="10" style="width: 60; height: 25; font-size:18px;">
+      </label>
     </div>
 
     <div style="margin-top: 20;">
@@ -129,9 +133,11 @@
       newDiv.id = itme_id
       root.appendChild(newDiv);
       let newInput = document.createElement("input");
+      newInput.className = "disabled-event"
       newInput.type = 'checkbox'
       newInput.id = itme_id
       newInput.value = itme_name
+      newInput.checked = true
       newDiv.appendChild(newInput);
       let newlabel = document.createElement("label");
       let newContent = document.createTextNode('[ 대기 중 ] ');
@@ -146,6 +152,7 @@
       newDiv.appendChild(newlabel2);
 
       let newSelect = document.createElement("select");
+      newSelect.className = "disabled-event"
       let ref_divs = document.querySelectorAll("div.refs > div").forEach((ref) => {
         ref_id = ref.id
         newOption = document.createElement("option");
@@ -200,6 +207,8 @@
     function chkItems() {
       let checkbox_list = $('div.listview input')
       let basePath = document.querySelector('div.config input#basePath').value
+      let dataPath = document.querySelector('div.config input#dataPath').value
+      let threshold = document.querySelector('input#threshold').value
       result = []
       for (let item of checkbox_list) {
         if (item.checked == true) {
@@ -213,13 +222,15 @@
           obj = {
             "itemId": item.id,
             "value": value,
+            "threshold": threshold,
             "option": {
               'name': option,
               'L': option_L,
               'M': option_M,
               'S': option_S
             },
-            "basePath": basePath
+            "basePath": basePath,
+            "dataPath": dataPath
           }
 
           result.push(obj)
@@ -240,14 +251,8 @@
 
     function elementDisabled(value) {
       console.log(value)
-      let button_list = $('button')
+      let button_list = $('.disabled-event')
       for (let item of button_list) {
-        console.log(item)
-        item.disabled = value
-      }
-
-      let checkbox_list = $('div.listview input')
-      for (let item of checkbox_list) {
         console.log(item)
         item.disabled = value
       }

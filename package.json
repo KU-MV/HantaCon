@@ -15,18 +15,14 @@
     "deploy:win64": "electron-builder --win nsis:x64"
   },
   "build": {
-    "productName": "Start Electron",
+    "productName": "Hantacon",
     "appId": "net.jetalab.ex.startelectron",
     "asar": true,
     "mac": {
       "target": [
         "default"
       ]
-    },
-    "dmg": {
-      "title": "Start Electron"
-    },
-    
+    },    
     "win": {
       "target": [
         {
@@ -39,15 +35,11 @@
       ]
     },
     "linux": {
-      "target": [
-        "AppImage",
-        "deb",
-        "rpm",
-        "zip",
-        "tar.gz"
-      ]
+      "target": "AppImage"
     },
+
     "nsis": {
+      "include": "./installer.nsh",
       "oneClick": false,
       "allowToChangeInstallationDirectory": false,
       "createDesktopShortcut": true
@@ -55,6 +47,24 @@
     "directories": {
       "buildResources": "resources"
     },
+    "extraFiles": [
+      {
+         "from": "./main.nf",
+          "to": "."
+      },
+      {
+        "from": "./nextflow.config",
+         "to": "."
+     },
+     {
+      "from": "./consensus.nf",
+       "to": "."
+    },
+    {
+     "from": "./ref",
+      "to": "./ref"
+   }
+    ],
     "files": [
       "./main.js",
       "./main.html",
