@@ -121,7 +121,7 @@ app.whenReady().then(() => {
           cmd += " " + args[arg]
         }
         log.info('cmd: ', cmd)
-        //win.webContents.executeJavaScript('alert("'+cmd+'")')
+        //win.webContents.executeJavaScript('alert("'+cmd+'")')1
         log.info('stdin: ', result.stdin)
         //win.webContents.executeJavaScript('alert("'+result.stdin+'")')
         log.info('stdout: ', result.stdout)
