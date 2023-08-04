@@ -4,9 +4,6 @@
   </head>  
   <body>
 
-    <div style="text-align: center; margin-top: 20; margin-bottom: 20;">
-      <img src="./img/top.png">
-    </div>
     <div class="refs" style="display: none">
     </div>
 
@@ -14,60 +11,142 @@
         <input id="basePath", type="text", value="">
         <input id="dataPath", type="text", value="">
     </div>
+    <div class="step-page step-0" style="height: 600; display: none;">
+        <div style="text-align: center; margin-top: 30;">
+          <img src="./img/top.png" style="width: 70%; height: 70%;">
+        </div>
 
+        <div style="width: 100%; height: 50; margin-top: 10; margin-bottom: 10;">
+          <button class="step-0-next" onclick="showPage(1)" style="width: 150; height: 45; display: flex; align-items: center; float:left; margin-left: 15;">
+            <img src="./img/Search.png" style="width: 30; height: 30; float:left;">
+            <label style="font-size: 18; margin-left: 5;">테스트</label>
+          </button>
 
-    <div class="listview" style="width : 100%; height: 400px; border: none 10px; overflow-y: scroll;">
+        </div>
     </div>
-    
-    <div>
-      <progress value="0" max="100" style="height: 25px; width : 100%;"></progress>
+    <div style="text-align: left; margin-top: 30; margin-left: 30;">
+      <img src="./img/top.png">
     </div>
-    
-    <div style="width: 100%; height: 50; margin-top: 10; margin-bottom: 10;">
-      <button class="allSelect disabled-event" onclick="allSelect()" style="width: 150; height: 45; display: flex; align-items: center; float:left; margin-left: 15;">
-        <img src="./img/selection.jpg" style="width: 30; height: 30; float:left;">
-        <label style="font-size: 18; margin-left: 5;">All select</label>
-      </button>
-
-      <button class="delete disabled-event" onclick="deleteItems()" style="width: 150; height: 45; display: flex; align-items: center; float:left; margin-left: 15;">
-        <img src="./img/delete.png" style="width: 30; height: 30; float:left;">
-        <label style="font-size: 18; margin-left: 5;">Items delete</label>
-      </button>
-
-      <button class="file disabled-event" style="width: 150; height: 45; display: flex; align-items: center; float:left; margin-left: 15;">
-        <img src="./img/Search.png" style="width: 30; height: 30; float:left;">
-        <label style="font-size: 18; margin-left: 5;">File find</label>
-      </button>
-
-      <button class="folder" style="width: 150; height: 45; display: flex; align-items: center; float:left; margin-left: 15;">
-        <img src="./img/folder.png" style="width: 30; height: 30; float:left;">
-        <label style="font-size: 18; margin-left: 5;">folder</label>
-      </button>
-      
-      <button class="run disabled-event" style="width: 150; height: 45; display: flex; align-items: center; float:left; margin-left: 15;">
-        <img src="./img/Run.png" style="width: 30; height: 30; float:left;">
-        <label style="font-size: 18; margin-left: 5;">Run</label>
-      </button>
-
-      <label style="margin-left: 15; font-size:18px;"> Threshold
-        <input type="number" class="spinner" id="threshold" min="0" max="9999" step="1" value="10" style="width: 60; height: 25; font-size:18px;">
-      </label>
-    </div>
-    <div style="margin-top: 20;">
-    
-    </div>
-    <div style="margin-top: 20;">
-      <div style="float:left; margin-left: 25;">
-        <img src="./img/KU.png" >
+    <div class="step-page step-1" style="height: 600;">
+      <div class="listview" style="width : 100%; height: 500px; border: none 10px; overflow-y: scroll; margin-top: 15;">
       </div>
-      <div  style="float:left; margin-left: 25;">
+      
+      <div>
+        <progress value="0" max="100" style="height: 25px; width : 100%;"></progress>
+      </div>
+      
+      <div style="width: 100%; height: 50; margin-top: 10; margin-bottom: 10;">
+        <div>
+          <button class="file disabled-event" style="width: 150; height: 45; display: flex; align-items: center; float:left; margin-left: 15;">
+            <img src="./img/Search.png" style="width: 30; height: 30; float:left;">
+            <label style="font-size: 18; margin-left: 5;">Find fasta</label>
+          </button>
+
+          <button class="allSelect disabled-event" onclick="allSelect()" style="width: 150; height: 45; display: flex; align-items: center; float:left; margin-left: 15;">
+            <img src="./img/selection.jpg" style="width: 30; height: 30; float:left;">
+            <label style="font-size: 18; margin-left: 5;">All select</label>
+          </button>
+    
+          <button class="delete disabled-event" onclick="deleteItems()" style="width: 150; height: 45; display: flex; align-items: center; float:left; margin-left: 15;">
+            <img src="./img/delete.png" style="width: 30; height: 30; float:left;">
+            <label style="font-size: 18; margin-left: 5;">Remove</label>
+          </button>
+    
+          <button class="folder" style="width: 150; height: 45; display: flex; align-items: center; float:left; margin-left: 15;">
+            <img src="./img/folder.png" style="width: 30; height: 30; float:left;">
+            <label style="font-size: 18; margin-left: 5;">Result</label>
+          </button>
+          
+          <button class="run disabled-event" style="width: 150; height: 45; display: flex; align-items: center; float:left; margin-left: 15;">
+            <img src="./img/Run.png" style="width: 30; height: 30; float:left;">
+            <label style="font-size: 18; margin-left: 5;">Run</label>
+          </button>
+    
+          <button class="run disabled-event" onclick="showPage(2)" style="width: 150; height: 45; display: flex; align-items: center; float:left; margin-left: 15;">
+            <img src="./img/Run.png" style="width: 30; height: 30; float:left;">
+            <label style="font-size: 18; margin-left: 5;">Nextstrain Start</label>
+          </button>
+
+          <label style="margin-left: 15; font-size:18px; display: flex; align-items: center; float:left; margin-left: 15; margin-top: 3;"> Threshold
+            <input type="number" class="spinner" id="threshold" min="0" max="9999" step="1" value="10" style="width: 60; height: 25; font-size:18px; margin-left: 15;">
+          </label>
+
+        </div>
+        
+      </div>
+    </div>
+
+    <div class="step-page step-2" style="display: none; height: 600;"> 
+      <div class="sub-option" style="width : 100%; height: 500px; margin-top: 15;">
+        <table>
+          <tr>
+            <th>virus</th>
+            <td><input type="text" name="text" size="20" style="width:100%;"></td>
+            <th>accession</th>
+            <td><input type="text" name="text" size="20" style="width:100%;"></td>
+            <th>date</th>
+            <td><input type="text" name="text" size="20" style="width:100%;"></td>
+            <th>host</th>
+            <td><input type="text" name="text" size="20" style="width:100%;"></td>
+            <th>region</th>
+            <td><input type="text" name="text" size="20" style="width:100%;"></td>
+          </tr>
+  
+          <tr>
+            <th>country</th>
+            <td><input type="text" name="text" size="20" style="width:100%;"></td>
+            <th>city</th>
+            <td><input type="text" name="text" size="20" style="width:100%;"></td>
+            <th>town</th>
+            <td><input type="text" name="text" size="20" style="width:100%;"></td>
+            <th>db</th>
+            <td><input type="text" name="text" size="20" style="width:100%;"></td>
+            <th>author</th>
+            <td><input type="text" name="text" size="20" style="width:100%;"></td>
+          </tr>
+  
+          <tr>
+            <th>url</th>
+            <td><input type="text" name="text" size="20" style="width:100%;"></td>
+            <th>title</th>
+            <td><input type="text" name="text" size="20" style="width:100%;"></td>
+            <th>journal</th>
+            <td><input type="text" name="text" size="20" style="width:100%;"></td>
+            <th>paper_url</th>
+            <td><input type="text" name="text" size="20" style="width:100%;"></td>
+          </tr>
+        </table>
+      </div>
+      <div>
+        <button class="step-0-next" onclick="showPage(1)" style="width: 150; height: 45; display: flex; align-items: center; float:right; margin-left: 15;">
+          <img src="./img/Search.png" style="width: 30; height: 30; float:left;">
+          <label style="font-size: 18; margin-left: 5;">Nextstrain Start</label>
+        </button>
+
+        <button class="step-0-next" onclick="showPage(1)" style="width: 150; height: 45; display: flex; align-items: center; float:right; margin-left: 15;">
+          <img src="./img/Search.png" style="width: 30; height: 30; float:left;">
+          <label style="font-size: 18; margin-left: 5;">Back</label>
+        </button>
+
+
+      </div>
+    </div>
+    
+
+    </div>
+    <div style="margin-top: 20; height: 150; text-align: center; display: flex; justify-content:center; align-items: center">
+      <div style="margin-left: 15; width: 75; display: flex; vertical-align: middle;">
+        <img src="./img/KU.png">
+      </div>
+      <div  style="margin-left: 15;  width: 305; display: flex; vertical-align: middle;">
         <img src="./img/NRF.png" >
     </div>
-      <div  style="width:50%; float:left; margin-left: 25;">
-        <p>
+      <br>
+      <div  style="width:50%; float:left; margin-left: 15; width: 700; text-align:left;">
+        <span>
           This work is made possible by the open sharing of genetic data by various research groups. These results were generated by the Korea university (Project Instructor: Name) in Republic of Korea. This project was supported by the Research Program To Solve Social Issues of the National Research Foundation of Korea (NRF) funded by the Ministry of Science and ICT (NRF-2023000000).
           Built with KU-HantaCon. Maintained by Jin-Won Song (Korea University).
-        </p>
+        </span>
       </div>
     </div>
 
@@ -282,6 +361,31 @@
           document.querySelector('div.listview div#'+itemId).remove()
         }
       }
+    }
+
+    function showOption() {
+      let div_option = document.querySelector('div.sub-option')
+      let display_none = div_option.getAttribute('style').includes('display: none')
+
+      if ( display_none == true ) {
+        div_option.style.display = 'block'
+      } else {
+        div_option.style.display = 'none'
+      }
+    }
+
+    function showPage(step) {
+      let page_list = $('div.step-page')
+      for (let item of page_list) {
+        let display_none = item.getAttribute('style').includes('display: none')
+        if ( display_none == false ) {
+          item.style.display = 'none'
+        }
+      }
+      console.log('div.step-'+step)
+      let div_option = document.querySelector('div.step-'+step)
+      console.log(div_option)
+      div_option.style.display = 'block'
     }
 
   </script>
