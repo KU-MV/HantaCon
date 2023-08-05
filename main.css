@@ -1,0 +1,44 @@
+div.step-2 th {
+  font-size: 25px;
+  padding-left: 50px;
+
+}
+
+div.step-2 td {
+  padding-left: 20px;
+  padding-right: 50px;
+}
+
+div.button {
+  width : 100%;
+  height: 100px;
+  justify-content: center;
+  display: flex;
+  margin-top: 10;
+}
+
+div.button button {
+  width: 150;
+  height: 45;
+  display: flex;
+  align-items: center;
+  float: left;
+  margin-left: 15;
+}
+
+button img {
+  width: 30;
+  height: 30;
+  float: left;
+}
+
+button label {
+  font-size: 18;
+  margin-left: 5;
+}
+
+td input {
+  width: 100%;
+  height: 30;
+  font-size: 25;
+}

@@ -40,7 +40,7 @@ app.whenReady().then(() => {
     },
     autoHideMenuBar: true
   });
-  win.setSize(1200, 850)
+  win.setSize(1200, 980)
   win.loadFile('main.html');
   const myWorker = new Worker(path.join(__dirname, 'worker.js'));
   const q_list = []
