@@ -31,6 +31,31 @@ app.commandLine.appendSwitch("disable-software-rasterizer");
 app.commandLine.appendSwitch('disable-gpu');
 
 
+function file_write(file_path, content, new_file=false){
+  if ((fs.existsSync(file_path)) && (new_file==false)){
+    fs.appendFile(file_path, content, 'utf-8', (err) => {});
+  } else {
+    fs.writeFile(file_path, content, 'utf-8', (err) => {});
+  }
+}
+
+function file_read(file_path, read_type='text'){
+  fs.readFile(file_path, 'utf-8', (err, data) => {
+    if (err) {
+      return err
+    }
+
+    if (read_type == "json") {
+      data = JSON.parse(data)
+    }
+    log.info(data)
+    return data
+  });
+}
+
+//file_read('./package-lock.json','json')
+//file_write('./test.txt','test',false)
+
 app.whenReady().then(() => {
   const win = new BrowserWindow({
     webPreferences: {
@@ -132,7 +157,7 @@ app.whenReady().then(() => {
       
         itemId = item["itemId"]
         value = item["value"]
-        if ((fs.existsSync(bams_L)) && (fs.existsSync(bams_M)) && (fs.existsSync(bams_M))){
+        if ((fs.existsSync(bams_L)) && (fs.existsSync(bams_M)) && (fs.existsSync(bams_S))){
           win.webContents.executeJavaScript('setStatus("'+itemId+'","[ 완료 ] ")')
         } else {
           win.webContents.executeJavaScript('setStatus("'+itemId+'","[ 실패 ] ")')
