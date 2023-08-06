@@ -55,24 +55,25 @@ parentPort.on('message', (items) => {
         let sequence_S = nextstrain_S + 'sequence.fasta'
         let metadata_S = nextstrain_S + 'metadata.tsv'
 
-        let virus = item['nextstrain']['virus']
-        let accession = item['nextstrain']['accession']
-        let date = item['nextstrain']['date']
+        let nextstrain_run = item['nextstrain']
+        let virus = item['nextstrain_option']['virus']
+        let accession = item['nextstrain_option']['accession']
+        let date = item['nextstrain_option']['date']
 
-        let host = item['nextstrain']['host']
-        let region = item['nextstrain']['region']
-        let country = item['nextstrain']['country']
+        let host = item['nextstrain_option']['host']
+        let region = item['nextstrain_option']['region']
+        let country = item['nextstrain_option']['country']
 
-        let city = item['nextstrain']['city']
-        let town = item['nextstrain']['town']
-        let db = item['nextstrain']['db']
+        let city = item['nextstrain_option']['city']
+        let town = item['nextstrain_option']['town']
+        let db = item['nextstrain_option']['db']
 
-        let author = item['nextstrain']['author']
-        let url = item['nextstrain']['url']
-        let title = item['nextstrain']['title']
+        let author = item['nextstrain_option']['author']
+        let url = item['nextstrain_option']['url']
+        let title = item['nextstrain_option']['title']
 
-        let journal = item['nextstrain']['journal']
-        let paper_url = item['nextstrain']['paper_url']
+        let journal = item['nextstrain_option']['journal']
+        let paper_url = item['nextstrain_option']['paper_url']
 
         let metadata_text = result_name + "\t"
         metadata_text += virus + "\t"
@@ -137,28 +138,31 @@ parentPort.on('message', (items) => {
             'S': bams_S
           }
         }
-         
-        if (fs.existsSync(bams_L)) {
-          bam_data = file_read(bams_L)
-          input_text = ">" + result_name + "\n" + bam_data + "\n"
-          file_write(file_path=sequence_L, content=input_text)
-          file_write(file_path=metadata_L, content=metadata_text)
+        
+        
+        if (nextstrain_run==true){
+          if (fs.existsSync(bams_L)) {
+            bam_data = file_read(bams_L)
+            input_text = ">" + result_name + "\n" + bam_data + "\n"
+            file_write(file_path=sequence_L, content=input_text)
+            file_write(file_path=metadata_L, content=metadata_text)
+          }
+  
+          if (fs.existsSync(bams_M)) {
+            bam_data = file_read(bams_M)
+            input_text = ">" + result_name + "\n" + bam_data + "\n"
+            file_write(file_path=sequence_M, content=input_text)
+            file_write(file_path=metadata_M, content=metadata_text)
+          }
+  
+          if (fs.existsSync(bams_S)) {
+            bam_data = file_read(bams_S)
+            input_text = ">" + result_name + "\n" + bam_data + "\n"
+            file_write(file_path=sequence_S, content=input_text)
+            file_write(file_path=metadata_S, content=metadata_text)
+          }
         }
-
-        if (fs.existsSync(bams_M)) {
-          bam_data = file_read(bams_M)
-          input_text = ">" + result_name + "\n" + bam_data + "\n"
-          file_write(file_path=sequence_M, content=input_text)
-          file_write(file_path=metadata_M, content=metadata_text)
-        }
-
-        if (fs.existsSync(bams_S)) {
-          bam_data = file_read(bams_S)
-          input_text = ">" + result_name + "\n" + bam_data + "\n"
-          file_write(file_path=sequence_S, content=input_text)
-          file_write(file_path=metadata_S, content=metadata_text)
-        }
-
+        
         parentPort.postMessage(obj); 
     }
   }

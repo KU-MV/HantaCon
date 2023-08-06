@@ -129,11 +129,11 @@
       </div>
 
       <div class="button">
-        <button class="step-0-next" onclick="showPage(1)">
+        <button class="run-nextstrain">
           <img src="./img/Search.png">
           <label>Nextstrain Start</label>
         </button>
-        <button class="step-0-next" onclick="showPage(1)">
+        <button class="back" onclick="showPage(1)">
           <img src="./img/Search.png">
           <label>Back</label>
         </button>
@@ -185,7 +185,11 @@
     //});
     
     document.querySelector('button.run').addEventListener('click', () => {
-      file_find.runShell(chkItems());
+      file_find.runShell(chkItems(false));
+    });
+
+    document.querySelector('button.run-nextstrain').addEventListener('click', () => {
+      file_find.runShell(chkItems(true));
     });
 
     document.querySelector('button.folder').addEventListener('click', () => {
@@ -302,7 +306,7 @@
 
     }
 
-    function chkItems() {
+    function chkItems(nextstrain) {
       let checkbox_list = $('div.listview input')
       let basePath = document.querySelector('div.config input#basePath').value
       let dataPath = document.querySelector('div.config input#dataPath').value
@@ -347,7 +351,8 @@
               'M': option_M,
               'S': option_S
             },
-            "nextstrain": {
+            "nextstrain": nextstrain,
+            "nextstrain_option": {
               "virus": virus,
               "accession": accession,
               "date": date,
