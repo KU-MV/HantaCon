@@ -89,41 +89,41 @@
         <table>
           <tr>
             <th>virus</th>
-            <td><input type="text" name="virus"></td>
+            <td><input type="text" id="virus"></td>
             <th>accession</th>
-            <td><input type="text" name="accession"></td>
+            <td><input type="text" id="accession"></td>
             <th>date</th>
-            <td><input type="text" name="date"></td>
+            <td><input type="text" id="date"></td>
           </tr>
           <tr>
             <th>host</th>
-            <td><input type="text" name="host"></td>
+            <td><input type="text" id="host"></td>
             <th>region</th>
-            <td><input type="text" name="region"></td>
+            <td><input type="text" id="region"></td>
             <th>country</th>
-            <td><input type="text" name="country"></td>
+            <td><input type="text" id="country"></td>
           </tr>
           <tr>
             <th>city</th>
-            <td><input type="text" name="city"></td>
+            <td><input type="text" id="city"></td>
             <th>town</th>
-            <td><input type="text" name="town"></td>
+            <td><input type="text" id="town"></td>
             <th>db</th>
-            <td><input type="text" name="db"></td>
+            <td><input type="text" id="db"></td>
           </tr>
           <tr>
             <th>author</th>
-            <td><input type="text" name="author"></td>
+            <td><input type="text" id="author"></td>
             <th>url</th>
-            <td><input type="text" name="url"></td>
+            <td><input type="text" id="url"></td>
             <th>title</th>
-            <td><input type="text" name="title"></td>
+            <td><input type="text" id="title"></td>
           </tr>
           <tr>
             <th>journal</th>
-            <td><input type="text" name="journal"></td>
+            <td><input type="text" id="journal"></td>
             <th>paper_url</th>
-            <td><input type="text" name="paper_url"></td>
+            <td><input type="text" id="paper_url"></td>
           </tr>
         </table>
       </div>
@@ -307,6 +307,26 @@
       let basePath = document.querySelector('div.config input#basePath').value
       let dataPath = document.querySelector('div.config input#dataPath').value
       let threshold = document.querySelector('input#threshold').value
+      
+      let virus = document.querySelector('div.sub-option input#virus').value
+      let accession = document.querySelector('div.sub-option input#accession').value
+      let date = document.querySelector('div.sub-option input#date').value
+      
+      let host = document.querySelector('div.sub-option input#host').value
+      let region = document.querySelector('div.sub-option input#region').value
+      let country = document.querySelector('div.sub-option input#country').value
+      
+      let city = document.querySelector('div.sub-option input#city').value
+      let town = document.querySelector('div.sub-option input#town').value
+      let db = document.querySelector('div.sub-option input#db').value
+      
+      let author = document.querySelector('div.sub-option input#author').value
+      let url = document.querySelector('div.sub-option input#url').value
+      let title = document.querySelector('div.sub-option input#title').value
+      
+      let journal = document.querySelector('div.sub-option input#journal').value
+      let paper_url = document.querySelector('div.sub-option input#paper_url').value
+
       result = []
       for (let item of checkbox_list) {
         if (item.checked == true) {
@@ -326,6 +346,22 @@
               'L': option_L,
               'M': option_M,
               'S': option_S
+            },
+            "nextstrain": {
+              "virus": virus,
+              "accession": accession,
+              "date": date,
+              "host": host,
+              "region": region,
+              "country": country,
+              "city": city,
+              "town": town,
+              "db": db,
+              "author": author,
+              "url": url,
+              "title": title,
+              "journal": journal,
+              "paper_url": paper_url
             },
             "basePath": basePath,
             "dataPath": dataPath
