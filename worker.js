@@ -1,29 +1,6 @@
 const { parentPort } = require('worker_threads');
 const log = require('electron-log')
 const { spawnSync } = require("child_process");
-const fs = require('fs');
-
-function file_write(file_path, content, new_file=false){
-  if ((fs.existsSync(file_path)) && (new_file==false)){
-    fs.appendFile(file_path, content, 'utf-8', (err) => {});
-  } else {
-    fs.writeFile(file_path, content, 'utf-8', (err) => {});
-  }
-}
-
-function file_read(file_path, read_type='text'){
-  fs.readFile(file_path, 'utf-8', (err, data) => {
-    if (err) {
-      return err
-    }
-
-    if (read_type == "json") {
-      data = JSON.parse(data)
-    }
-    log.info(data)
-    return data
-  });
-}
 
 parentPort.on('message', (items) => {
   //log.info('수신: ',item)
@@ -123,43 +100,43 @@ parentPort.on('message', (items) => {
           //log.info(result.stdout.toString())
           log.info('완료: ', item)
         }
+        
+        let consensus_L = result_path + result_name + "/" + result_name + "_L.consensus.fasta"
+        let consensus_M = result_path + result_name + "/" + result_name + "_M.consensus.fasta"
+        let consensus_S = result_path + result_name + "/" + result_name + "_S.consensus.fasta"
         let bams_L = result_path + result_name + "/bams/" + result_name + "_L.bam"
         let bams_M = result_path + result_name + "/bams/" + result_name + "_M.bam"
         let bams_S = result_path + result_name + "/bams/" + result_name + "_S.bam"
+
         let obj = {
+          'name': result_name,
           'item': item,
           'result': result,
           'app': app,
           'args': args,
           'bams': {
-            'name': result_name,
             'L': bams_L,
             'M': bams_M,
             'S': bams_S
-          }
-        }
-        
-        
-        if (nextstrain_run==true){
-          if (fs.existsSync(bams_L)) {
-            bam_data = file_read(bams_L)
-            input_text = ">" + result_name + "\n" + bam_data + "\n"
-            file_write(file_path=sequence_L, content=input_text)
-            file_write(file_path=metadata_L, content=metadata_text)
-          }
-  
-          if (fs.existsSync(bams_M)) {
-            bam_data = file_read(bams_M)
-            input_text = ">" + result_name + "\n" + bam_data + "\n"
-            file_write(file_path=sequence_M, content=input_text)
-            file_write(file_path=metadata_M, content=metadata_text)
-          }
-  
-          if (fs.existsSync(bams_S)) {
-            bam_data = file_read(bams_S)
-            input_text = ">" + result_name + "\n" + bam_data + "\n"
-            file_write(file_path=sequence_S, content=input_text)
-            file_write(file_path=metadata_S, content=metadata_text)
+          },
+          'consensus': {
+            'L': consensus_L,
+            'M': consensus_M,
+            'S': consensus_S
+          },
+          'nextstrain': nextstrain_run,
+          'metadata': {
+            'data': metadata_text,
+            'L': metadata_L,
+            'M': metadata_M,
+            'S': metadata_S,
+            
+          },
+          'sequence': {
+            'L': sequence_L,
+            'M': sequence_M,
+            'S': sequence_S,
+
           }
         }
         

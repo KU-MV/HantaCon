@@ -32,29 +32,61 @@ app.commandLine.appendSwitch('disable-gpu');
 
 
 function file_write(file_path, content, new_file=false){
+  try {
+    if ((fs.existsSync(file_path)) && (new_file==false)){
+      fs.appendFileSync(file_path, content, 'utf-8');
+    } else {
+      fs.writeFileSync(file_path, content, 'utf-8');
+    }
+  } catch (err) {
+    log.info(err)
+    log.info('write error: ', file_path)
+  }
+
+}
+
+function file_write2(file_path, content, new_file=false){
   if ((fs.existsSync(file_path)) && (new_file==false)){
-    fs.appendFile(file_path, content, 'utf-8', (err) => {});
+    fs.appendFile(file_path, content, 'utf-8', (err) => {log.info(err)});
+    log.info('add')
   } else {
-    fs.writeFile(file_path, content, 'utf-8', (err) => {});
+    fs.writeFile(file_path, content, 'utf-8', (err) => {log.info(err)});
+    log.info('create')
   }
 }
 
 function file_read(file_path, read_type='text'){
-  fs.readFile(file_path, 'utf-8', (err, data) => {
-    if (err) {
-      return err
-    }
+
+  try {
+    data = fs.readFileSync(file_path, 'utf-8')
 
     if (read_type == "json") {
       data = JSON.parse(data)
     }
-    log.info(data)
+
     return data
-  });
+  
+  } catch (err) {
+    log.info(err)
+    log.info('read error: ', file_path)
+  }
 }
 
-//file_read('./package-lock.json','json')
-//file_write('./test.txt','test',false)
+function read_consensus(file_path){
+  read_data = file_read(file_path)
+  let data_split = String(read_data).split('\n')
+
+  text = ""
+  for ( line_index in data_split ) {
+    if (line_index > 0) {
+      text += data_split[line_index]
+    }
+  }
+
+  return text
+}
+
+file_write('/home/jwsonglab/Hantacon/Nextstrain/htv_L/data/metadata.tsv','test')
 
 app.whenReady().then(() => {
   const win = new BrowserWindow({
@@ -126,16 +158,29 @@ app.whenReady().then(() => {
       win.webContents.executeJavaScript('elementDisabled(true)')
       //win.webContents.executeJavaScript('document.querySelector("div.loading-container").style.display = "block"')  
       myWorker.on('message', (obj) => {
+        let result_name = obj['name']
         let result = obj['result']
         let item = obj['item']
         let app = obj['app']
         let args = obj['args']
         let bams = obj['bams']
-        let bams_name = bams['name']
         let bams_L = bams['L']
         let bams_M = bams['M']
         let bams_S = bams['S']
+        let consensus = obj['consensus']
+        let consensus_L = consensus['L']
+        let consensus_M = consensus['M']
+        let consensus_S = consensus['S']
+        let nextstrain_run = obj['nextstrain']
+        let metadata = obj['metadata']['data']
+        let metadata_L = obj['metadata']['L']
+        let metadata_M = obj['metadata']['M']
+        let metadata_S = obj['metadata']['S']
+        let sequence_L = obj['sequence']['L']
+        let sequence_M = obj['sequence']['M']
+        let sequence_S = obj['sequence']['S']
         
+
         //log.info('test: ' ,item)
         //log.info('q_list:',q_list)
         //log.info('q_list.length:',q_list.length)
@@ -153,6 +198,35 @@ app.whenReady().then(() => {
         //win.webContents.executeJavaScript('alert("'+result.stdout+'")')
         log.info('stderr: ', result.stderr)
         //win.webContents.executeJavaScript('alert("'+result.stderr+'")')
+        
+        if (nextstrain_run==true){
+          if (fs.existsSync(consensus_L)) {
+            let consensus_data = read_consensus(consensus_L)
+            let input_text = ">" + result_name + "\n" + consensus_data + "\n"
+            log.info(input_text)
+            log.info(metadata)
+            file_write(file_path=sequence_L, content=input_text)
+            file_write(file_path=metadata_L, content=metadata)
+          }
+  
+          if (fs.existsSync(consensus_M)) {
+            let consensus_data = read_consensus(consensus_M)
+            let input_text = ">" + result_name + "\n" + consensus_data + "\n"
+            log.info(input_text)
+            log.info(metadata)
+            file_write(file_path=sequence_M, content=input_text)
+            file_write(file_path=metadata_M, content=metadata)
+          }
+  
+          if (fs.existsSync(consensus_S)) {
+            let consensus_data = read_consensus(consensus_S)
+            let input_text = ">" + result_name + "\n" + consensus_data + "\n"
+            log.info(input_text)
+            log.info(metadata)
+            file_write(file_path=sequence_S, content=input_text)
+            file_write(file_path=metadata_S, content=metadata)
+          }
+        }
 
       
         itemId = item["itemId"]
@@ -171,6 +245,9 @@ app.whenReady().then(() => {
           //win.webContents.executeJavaScript('document.querySelector("div.loading-container").style.display = "none"')  
         }
       });
+
+
+
       myWorker.postMessage(items);
     }
   })
