@@ -74,7 +74,8 @@ parentPort.on('message', (items) => {
         let journal = item['nextstrain']['journal']
         let paper_url = item['nextstrain']['paper_url']
 
-        let metadata_text = virus + "\t"
+        let metadata_text = result_name + "\t"
+        metadata_text += virus + "\t"
         metadata_text += accession + "\t"
         metadata_text += date + "\t"
         metadata_text += host + "\t"
