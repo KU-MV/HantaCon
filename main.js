@@ -255,6 +255,18 @@ app.whenReady().then(() => {
                 'args': ['shell','.','-c','"snakemake -c1"'],
                 'workdir': workdir.value
               }
+              
+              folderPath_result = workdir.value+"/result"
+              folderPath_auspice = workdir.value+"/auspice"
+              log.info("folderPath_result: ",folderPath_result)
+              log.info("folderPath_auspice: ",folderPath_auspice)
+              if (fs.existsSync(folderPath_result)) {
+                fs.rmdirSync(folderPath_result, { recursive: true });
+              }
+              if (fs.existsSync(folderPath_auspice)) {
+                fs.rmdirSync(folderPath_auspice, { recursive: true });
+              }
+
               myWorker.postMessage(run_obj)
   
               myWorker.on('run_shell', (result) => {
@@ -266,7 +278,7 @@ app.whenReady().then(() => {
             }
 
           }
-          
+
           win.webContents.executeJavaScript('elementDisabled(false)')
           win.webContents.executeJavaScript('alert("Complete")')
           //win.webContents.executeJavaScript('document.querySelector("div.loading-container").style.display = "none"')  
