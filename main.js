@@ -11,6 +11,10 @@ log.info(app.getPath('home'))
 log.info(app.getPath('desktop'))
 
 const data_path = app.getPath('home') + '/Hantacon'
+const nextstrain_L_path = data_path + '/Hantacon/htv_L'
+const nextstrain_M_path = data_path + '/Hantacon/htv_M'
+const nextstrain_S_path = data_path + '/Hantacon/htv_S'
+
 
 const base_path = appPath
 log.info(base_path)
@@ -86,7 +90,6 @@ function read_consensus(file_path){
   return text
 }
 
-file_write('/home/jwsonglab/Hantacon/Nextstrain/htv_L/data/metadata.tsv','test')
 
 app.whenReady().then(() => {
   const win = new BrowserWindow({
@@ -147,6 +150,8 @@ app.whenReady().then(() => {
   })
   
   ipcMain.on('runShell', (event, items) => {
+
+    let nextstrain_chk = false
     log.info('아이템: ',items)
     if ( items.value.length > 0 ){
       for ( let item in items.value ) {
@@ -198,7 +203,7 @@ app.whenReady().then(() => {
         //win.webContents.executeJavaScript('alert("'+result.stdout+'")')
         log.info('stderr: ', result.stderr)
         //win.webContents.executeJavaScript('alert("'+result.stderr+'")')
-        
+        nextstrain_chk = nextstrain_run
         if (nextstrain_run==true){
           if (fs.existsSync(consensus_L)) {
             let consensus_data = read_consensus(consensus_L)
@@ -233,6 +238,7 @@ app.whenReady().then(() => {
         value = item["value"]
         if ((fs.existsSync(bams_L)) && (fs.existsSync(bams_M)) && (fs.existsSync(bams_S))){
           win.webContents.executeJavaScript('setStatus("'+itemId+'","[ 완료 ] ")')
+          
         } else {
           win.webContents.executeJavaScript('setStatus("'+itemId+'","[ 실패 ] ")')
         }
@@ -240,13 +246,32 @@ app.whenReady().then(() => {
         q_list.pop(item)
         win.webContents.executeJavaScript('progress_add()')
         if ( q_list.length == 0 ){
+          
+          if ( nextstrain_chk == ture ) {
+
+            for (workdir in [nextstrain_L_path, nextstrain_M_path, nextstrain_S_path]) {
+              run_obj = {
+                'app': 'nextstrain',
+                'args': ['shell','.','-c','"snakemake -c1"'],
+                'workdir': workdir.value
+              }
+              myWorker.postMessage(run_obj)
+  
+              myWorker.on('run_shell', (result) => {
+                //nextstrain shell . -c "snakemake -c1"
+                log.info('stdin: ', result.stdin)
+                log.info('stdout: ', result.stdout)
+                log.info('stderr: ', result.stderr)
+              })
+            }
+
+          }
+          
           win.webContents.executeJavaScript('elementDisabled(false)')
           win.webContents.executeJavaScript('alert("Complete")')
           //win.webContents.executeJavaScript('document.querySelector("div.loading-container").style.display = "none"')  
         }
       });
-
-
 
       myWorker.postMessage(items);
     }

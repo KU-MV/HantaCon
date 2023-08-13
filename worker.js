@@ -146,3 +146,14 @@ parentPort.on('message', (items) => {
 
   log.info('끝')
 });
+
+
+parentPort.on('run_shell', (run_obj) => {
+  app = run_obj['app']
+  args = run_obj['args']
+  workdir = run_obj['workdir']
+  result = spawnSync(app, args, {encoding: 'utf-8', cwd: workdir})//, 
+  parentPort.postMessage(result);
+});
+
+
