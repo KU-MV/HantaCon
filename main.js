@@ -11,9 +11,9 @@ log.info(app.getPath('home'))
 log.info(app.getPath('desktop'))
 
 const data_path = app.getPath('home') + '/Hantacon'
-const nextstrain_L_path = data_path + '/Hantacon/htv_L'
-const nextstrain_M_path = data_path + '/Hantacon/htv_M'
-const nextstrain_S_path = data_path + '/Hantacon/htv_S'
+const nextstrain_L_path = data_path + '/nextstrain/htv_L'
+const nextstrain_M_path = data_path + '/nextstrain/htv_M'
+const nextstrain_S_path = data_path + '/nextstrain/htv_S'
 
 
 const base_path = appPath
@@ -103,6 +103,7 @@ app.whenReady().then(() => {
   win.setSize(1200, 980)
   win.loadFile('main.html');
   const myWorker = new Worker(path.join(__dirname, 'worker.js'));
+  const myWorker2 = new Worker(path.join(__dirname, 'worker2.js'));
   const q_list = []
   win.webContents.executeJavaScript('document.querySelector("div.config input#basePath").value = "' + base_path +'"') 
   win.webContents.executeJavaScript('document.querySelector("div.config input#dataPath").value = "' + data_path +'"') 
@@ -247,41 +248,47 @@ app.whenReady().then(() => {
         win.webContents.executeJavaScript('progress_add()')
         if ( q_list.length == 0 ){
           
-          if ( nextstrain_chk == ture ) {
-
-            for (workdir in [nextstrain_L_path, nextstrain_M_path, nextstrain_S_path]) {
+          if ( nextstrain_chk == false ) {
+            workdirs = [nextstrain_L_path, nextstrain_M_path, nextstrain_S_path]
+            nextstrain_works = []
+            for (workdir_index in workdirs) {
               run_obj = {
                 'app': 'nextstrain',
-                'args': ['shell','.','-c','"snakemake -c1"'],
-                'workdir': workdir.value
+                'args': ['shell','.','-c','snakemake -c1'],
+                'workdir': workdirs[workdir_index]
               }
-              
-              folderPath_result = workdir.value+"/result"
-              folderPath_auspice = workdir.value+"/auspice"
+              nextstrain_works.push(run_obj)
+              log.info('run_obj: ',run_obj)
+              folderPath_result = workdirs[workdir_index]+"/results"
+              folderPath_auspice = workdirs[workdir_index]+"/auspice"
               log.info("folderPath_result: ",folderPath_result)
               log.info("folderPath_auspice: ",folderPath_auspice)
               if (fs.existsSync(folderPath_result)) {
-                fs.rmdirSync(folderPath_result, { recursive: true });
+                fs.rmSync(folderPath_result, { recursive: true });
               }
               if (fs.existsSync(folderPath_auspice)) {
-                fs.rmdirSync(folderPath_auspice, { recursive: true });
+                fs.rmSync(folderPath_auspice, { recursive: true });
               }
-
-              myWorker.postMessage(run_obj)
-  
-              myWorker.on('run_shell', (result) => {
-                //nextstrain shell . -c "snakemake -c1"
-                log.info('stdin: ', result.stdin)
-                log.info('stdout: ', result.stdout)
-                log.info('stderr: ', result.stderr)
-              })
             }
+        
 
+            myWorker2.postMessage(nextstrain_works)
+            myWorker2.on('message', (nextstrain_result) => {
+              //nextstrain shell . -c "snakemake -c1"
+              log.info('stdin: ', nextstrain_result['result'].stdin)
+              log.info('stdout: ', nextstrain_result['result'].stdout)
+              log.info('stderr: ', nextstrain_result['result'].stderr)
+              nextstrain_works.pop(nextstrain_result['item'])
+              if ( nextstrain_works.length == 0 ){
+                win.webContents.executeJavaScript('elementDisabled(false)')
+                win.webContents.executeJavaScript('alert("Complete")')
+              }
+            })
+            log.info('end')
+          } else {
+            win.webContents.executeJavaScript('elementDisabled(false)')
+            win.webContents.executeJavaScript('alert("Complete")')
           }
-
-          win.webContents.executeJavaScript('elementDisabled(false)')
-          win.webContents.executeJavaScript('alert("Complete")')
-          //win.webContents.executeJavaScript('document.querySelector("div.loading-container").style.display = "none"')  
         }
       });
 
