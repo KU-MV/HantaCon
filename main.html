@@ -129,11 +129,15 @@
       </div>
 
       <div class="button">
-        <button class="run-nextstrain">
+        <button class="run-auspice disabled-event">
+          <img src="./img/Search.png">
+          <label>Auspice Start</label>
+        </button>
+        <button class="run-nextstrain disabled-event">
           <img src="./img/Search.png">
           <label>Nextstrain Start</label>
         </button>
-        <button class="back" onclick="showPage(1)">
+        <button class="back disabled-event" onclick="showPage(1)">
           <img src="./img/Search.png">
           <label>Back</label>
         </button>
@@ -184,6 +188,10 @@
     //  file_find.runShell(chkItems());
     //});
     
+    document.querySelector('button.run-auspice').addEventListener('click', () => {
+      file_find.auspice();
+    });
+
     document.querySelector('button.run').addEventListener('click', () => {
       file_find.runShell(chkItems(false));
     });

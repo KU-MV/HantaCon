@@ -14,6 +14,9 @@ const data_path = app.getPath('home') + '/Hantacon'
 const nextstrain_L_path = data_path + '/nextstrain/htv_L'
 const nextstrain_M_path = data_path + '/nextstrain/htv_M'
 const nextstrain_S_path = data_path + '/nextstrain/htv_S'
+const nextstrain_L_auspice = nextstrain_L_path + '/auspice/htv_L.json'
+const nextstrain_M_auspice = nextstrain_M_path + '/auspice/htv_M.json'
+const nextstrain_S_auspice = nextstrain_S_path + '/auspice/htv_S.json'
 
 
 const base_path = appPath
@@ -21,6 +24,8 @@ log.info(base_path)
 
 const ref_path = base_path + '/ref'
 const result_path = data_path + '/result'
+const auspice_result_path = data_path + '/auspice_result'
+
 
 log.info(ref_path)
 
@@ -28,6 +33,7 @@ const fs = require('fs');
 if (!fs.existsSync(data_path)) fs.mkdir(data_path, (error) => error && log.info(error));
 if (!fs.existsSync(ref_path)) fs.mkdir(ref_path, (error) => error && log.info(error));
 if (!fs.existsSync(result_path)) fs.mkdir(result_path, (error) => error && log.info(error));
+if (!fs.existsSync(auspice_result_path)) fs.mkdir(auspice_result_path, (error) => error && log.info(error));
 const refs = fs.readdirSync(ref_path)
 log.info(refs)
 
@@ -149,7 +155,54 @@ app.whenReady().then(() => {
     log.info('baseOpen')
     shell.openPath(data_path)
   })
-  
+
+  ipcMain.on('auspice', () => {
+    log.info('auspice')
+    win.webContents.executeJavaScript('elementDisabled(true)')
+    workdirs = [nextstrain_L_path, nextstrain_M_path, nextstrain_S_path]
+    nextstrain_works = []
+    for (workdir_index in workdirs) {
+      run_obj = {
+        'app': 'nextstrain',
+        'args': ['shell','.','-c','snakemake -c1'],
+        'workdir': workdirs[workdir_index]
+      }
+      nextstrain_works.push(run_obj)
+      log.info('run_obj: ',run_obj)
+      folderPath_result = workdirs[workdir_index]+"/results"
+      folderPath_auspice = workdirs[workdir_index]+"/auspice"
+      log.info("folderPath_result: ",folderPath_result)
+      log.info("folderPath_auspice: ",folderPath_auspice)
+      if (fs.existsSync(folderPath_result)) {
+        fs.rmSync(folderPath_result, { recursive: true });
+      }
+      if (fs.existsSync(folderPath_auspice)) {
+        fs.rmSync(folderPath_auspice, { recursive: true });
+      }
+    }
+
+
+    myWorker2.postMessage(nextstrain_works)
+    myWorker2.on('message', (nextstrain_result) => {
+      //nextstrain shell . -c "snakemake -c1"
+      log.info('stdin: ', nextstrain_result['result'].stdin)
+      log.info('stdout: ', nextstrain_result['result'].stdout)
+      log.info('stderr: ', nextstrain_result['result'].stderr)
+      nextstrain_works.pop(nextstrain_result['item'])
+      if ( nextstrain_works.length == 0 ){
+        win.webContents.executeJavaScript('elementDisabled(false)')
+        win.webContents.executeJavaScript('alert("Complete")')
+        let currentDate = new Date();
+        let formattedDate = auspice_result_path + '/' + currentDate.toISOString().replace(/T/,'_').replace(/\..+/, '').replace('-','_').replace('-','_').replace(':','_').replace(':','_');
+        fs.mkdirSync(formattedDate)
+        if (fs.existsSync(nextstrain_L_auspice)) fs.copyFile(nextstrain_L_auspice, formattedDate+'/htv_L.json',(error) => error && log.info(error));
+        if (fs.existsSync(nextstrain_M_auspice)) fs.copyFile(nextstrain_M_auspice, formattedDate+'/htv_M.json',(error) => error && log.info(error));
+        if (fs.existsSync(nextstrain_S_auspice)) fs.copyFile(nextstrain_S_auspice, formattedDate+'/htv_S.json',(error) => error && log.info(error));
+      }
+    })
+    log.info('end')
+  })
+
   ipcMain.on('runShell', (event, items) => {
 
     let nextstrain_chk = false
@@ -248,7 +301,7 @@ app.whenReady().then(() => {
         win.webContents.executeJavaScript('progress_add()')
         if ( q_list.length == 0 ){
           
-          if ( nextstrain_chk == false ) {
+          if ( nextstrain_chk == true ) {
             workdirs = [nextstrain_L_path, nextstrain_M_path, nextstrain_S_path]
             nextstrain_works = []
             for (workdir_index in workdirs) {
@@ -282,6 +335,12 @@ app.whenReady().then(() => {
               if ( nextstrain_works.length == 0 ){
                 win.webContents.executeJavaScript('elementDisabled(false)')
                 win.webContents.executeJavaScript('alert("Complete")')
+                let currentDate = new Date();
+                let formattedDate = auspice_result_path + '/' + currentDate.toISOString().replace(/T/,'_').replace(/\..+/, '').replace('-','_').replace('-','_').replace(':','_').replace(':','_');
+                fs.mkdirSync(formattedDate)
+                if (fs.existsSync(nextstrain_L_auspice)) fs.copyFile(nextstrain_L_auspice, formattedDate+'/htv_L.json',(error) => error && log.info(error));
+                if (fs.existsSync(nextstrain_M_auspice)) fs.copyFile(nextstrain_M_auspice, formattedDate+'/htv_M.json',(error) => error && log.info(error));
+                if (fs.existsSync(nextstrain_S_auspice)) fs.copyFile(nextstrain_S_auspice, formattedDate+'/htv_S.json',(error) => error && log.info(error));
               }
             })
             log.info('end')
