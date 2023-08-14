@@ -71,6 +71,7 @@
       "./preload.js",
       "./jquery-3.7.0.min.js",
       "./worker.js",
+      "./worker2.js",
       "./main.css",
       "./img/*"
     ]
