@@ -103,6 +103,7 @@ app.whenReady().then(() => {
       preload: path.join(__dirname, 'preload.js'),
       nodeIntegration: true,
       nodeIntegrationInWorker: true,
+      icon: win.icon = path.join(`${__dirname}/img/icons/icon.png`)
     },
     autoHideMenuBar: true
   });
