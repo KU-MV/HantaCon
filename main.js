@@ -96,6 +96,7 @@ function read_consensus(file_path){
   return text
 }
 
+icon_path = path.join(__dirname, '/img/icons/icon.png')
 
 app.whenReady().then(() => {
   const win = new BrowserWindow({
@@ -103,13 +104,13 @@ app.whenReady().then(() => {
       preload: path.join(__dirname, 'preload.js'),
       nodeIntegration: true,
       nodeIntegrationInWorker: true,
-      icon: win.icon = path.join(`${__dirname}/img/icons/icon.png`)
+      icon: icon_path
     },
     autoHideMenuBar: true
   });
 
   if (process.platform === "linux") {
-    win.icon = path.join(`${__dirname}/img/icons/icon.png`);
+    win.icon = icon_path;
   }
 
   win.setSize(1200, 980)
