@@ -106,6 +106,11 @@ app.whenReady().then(() => {
     },
     autoHideMenuBar: true
   });
+
+  if (process.platform === "linux") {
+    win.icon = path.join(`${__dirname}/img/icons/icon.png`);
+  }
+
   win.setSize(1200, 980)
   win.loadFile('main.html');
   const myWorker = new Worker(path.join(__dirname, 'worker.js'));

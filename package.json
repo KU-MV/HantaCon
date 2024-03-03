@@ -1,7 +1,7 @@
 {
   "name": "start-electron",
   "email": "greytrace64@gmail.com",
-  "version": "1.0.2",
+  "version": "1.0.4",
   "description": "",
   "main": "main.js",
   "scripts": {
@@ -35,7 +35,8 @@
       ]
     },
     "linux": {
-      "target": "AppImage"
+      "target": "AppImage",
+      "icon": "./build/icons/icon.png"
     },
 
     "nsis": {
