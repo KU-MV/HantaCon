@@ -12,22 +12,18 @@
   "build": {
     "productName": "Hantacon",
     "linux": {
-      "target": ["deb"],
+      "target": ["Appimage","deb"],
       "category": "Utility",
       "description": "desc test",
       "icon": "./build/256x256.png",
       "desktop": {
-        "Icon": "/opt/Hantacon/build/256x256.png"
+        "Icon": "/opt/Hantacon/256x256.png"
       }
-    },
-    "directories": {
-      "buildResources": "./build",
-      "output": "./build"
     },
     "extraFiles": [
       {
-        "from": "./build",
-        "to": "./build"
+        "from": "./build/256x256.png",
+        "to": "."
       },
       {
         "from": "./main.nf",
