@@ -15,12 +15,20 @@
       "target": ["deb"],
       "category": "Utility",
       "description": "desc test",
-      "icon": "./img/256x256.png"
+      "icon": "./build/256x256.png",
+      "desktop": {
+        "Icon": "/opt/Hantacon/build/256x256.png"
+      }
     },
     "directories": {
-      "buildResources": "img"
+      "buildResources": "./build",
+      "output": "./build"
     },
     "extraFiles": [
+      {
+        "from": "./build",
+        "to": "./build"
+      },
       {
         "from": "./main.nf",
         "to": "."
