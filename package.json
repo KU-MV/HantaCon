@@ -15,7 +15,7 @@
       "target": ["deb"],
       "category": "Utility",
       "description": "desc test",
-      "icon": "img/256x256.png"
+      "icon": "./img/256x256.png"
     },
     "directories": {
       "buildResources": "img"
