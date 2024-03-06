@@ -1,70 +1,42 @@
 {
-  "name": "start-electron",
+  "name": "Hantacon",
   "email": "greytrace64@gmail.com",
-  "version": "1.0.4",
-  "description": "",
+  "version": "1.0.5",
+  "description": "test",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "deploy:osx": "electron-builder --mac",
-    "build:linux": "npm run build:linux32 && npm run build:linux64",
-    "build:linux32": "electron-builder --linux --ia32",
-    "build:linux64": "electron-builder --linux --x64 -p never",
-    "deploy:win": "npm run deploy:win32 && npm run deploy:win64",
-    "deploy:win32": "electron-builder --win nsis:ia32",
-    "deploy:win64": "electron-builder --win nsis:x64"
+    "build:osx": "electron-builder --mac",
+    "build:linux": "electron-builder --linux --x64 -p never"
   },
   "build": {
     "productName": "Hantacon",
-    "appId": "net.jetalab.ex.startelectron",
-    "asar": true,
-    "mac": {
-      "target": [
-        "default"
-      ]
-    },    
-    "win": {
-      "target": [
-        {
-          "target": "nsis",
-          "arch": [
-            "x64",
-            "ia32"
-          ]
-        }
-      ]
-    },
     "linux": {
-      "target": "AppImage",
-      "icon": "./build/icons/icon.png"
-    },
-
-    "nsis": {
-      "include": "./installer.nsh",
-      "oneClick": false,
-      "allowToChangeInstallationDirectory": false,
-      "createDesktopShortcut": true
+      "target": ["deb"],
+      "category": "Utility",
+      "description": "desc test",
+      "icon": "img/256x256.png"
     },
     "directories": {
-      "buildResources": "resources"
+      "buildResources": "img"
     },
     "extraFiles": [
       {
-         "from": "./main.nf",
-          "to": "."
+        "from": "./main.nf",
+        "to": "."
       },
       {
         "from": "./nextflow.config",
-         "to": "."
-     },
-     {
-      "from": "./consensus.nf",
-       "to": "."
-    },
-    {
-     "from": "./ref",
-      "to": "./ref"
-   }
+        "to": "."
+      },
+      {
+        "from": "./consensus.nf",
+        "to": "."
+      },
+      {
+        "from": "./ref",
+        "to": "./ref"
+      }
     ],
     "files": [
       "./main.js",
@@ -80,12 +52,12 @@
   "author": "Grey Ha <greytrace64@gmail.com>",
   "license": "ISC",
   "devDependencies": {
-    "electron": "^25.1.1",
-    "electron-builder": "^24.4.0"
+    "electron": "^25.9.8",
+    "electron-builder": "^22.10.5"
   },
   "dependencies": {
-    "@electron/remote": "^2.0.10",
+    "election": "0.0.0",
     "electron-log": "^4.4.8",
-    "yarn": "^1.22.19"
+    "electron-packager": "^15.0.0"
   }
 }
