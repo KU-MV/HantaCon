@@ -60,6 +60,7 @@ try {
 
   const data_path = app.getPath('home') + '/Hantacon'
   const config_path = data_path + '/config.json'
+  if (!fs.existsSync(data_path)) fs.mkdir(data_path, (error) => error && log.info(error));
   if (!fs.existsSync(config_path)) fs.copyFile(appPath+'/config.json', config_path,(error) => error && log.info(error));
   config = file_read(config_path, read_type='json')
   log.info(config)
@@ -73,7 +74,7 @@ try {
   const result_path = config['path']['result'].replace("{basePath}",data_path)//data_path + '/result'
   const auspice_result_path = config['path']['auspice_result'].replace("{basePath}",data_path)//data_path + '/auspice_result'
 
-  if (!fs.existsSync(data_path)) fs.mkdir(data_path, (error) => error && log.info(error));
+
   if (!fs.existsSync(ref_path)) fs.mkdir(ref_path, (error) => error && log.info(error));
   if (!fs.existsSync(result_path)) fs.mkdir(result_path, (error) => error && log.info(error));
   if (!fs.existsSync(auspice_result_path)) fs.mkdir(auspice_result_path, (error) => error && log.info(error));
