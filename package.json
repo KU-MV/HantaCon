@@ -38,6 +38,10 @@
         "to": "."
       },
       {
+        "from": "./config.json",
+        "to": "."
+      },
+      {
         "from": "./ref",
         "to": "./ref"
       }
