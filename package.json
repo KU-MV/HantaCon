@@ -14,7 +14,7 @@
     "linux": {
       "target": ["Appimage","deb"],
       "category": "Utility",
-      "description": "desc test",
+      "description": "The HanaCon was developed and maintained by Jin-Won Song at Korea University, Republic of Korea.",
       "icon": "./build/256x256.png",
       "desktop": {
         "Icon": "/opt/Hantacon/256x256.png"
