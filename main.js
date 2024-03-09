@@ -5,65 +5,8 @@ const log = require('electron-log')
 const appPath = app.isPackaged ? process.execPath.replace('/'+app.getName(),'') : app.getAppPath();
 //log.info(process.execPath)
 //log.info(app.getAppPath())
-
-log.info(app.getPath('userData'))
-log.info(app.getPath('home'))
-log.info(app.getPath('desktop'))
-
-const data_path = app.getPath('home') + '/Hantacon'
-const nextstrain_L_path = data_path + '/nextstrain/htv_L'
-const nextstrain_M_path = data_path + '/nextstrain/htv_M'
-const nextstrain_S_path = data_path + '/nextstrain/htv_S'
-const nextstrain_L_auspice = nextstrain_L_path + '/auspice/htv_L.json'
-const nextstrain_M_auspice = nextstrain_M_path + '/auspice/htv_M.json'
-const nextstrain_S_auspice = nextstrain_S_path + '/auspice/htv_S.json'
-
-
-const base_path = appPath
-log.info(base_path)
-
-const ref_path = base_path + '/ref'
-const result_path = data_path + '/result'
-const auspice_result_path = data_path + '/auspice_result'
-
-
-log.info(ref_path)
-
-const fs = require('fs');
-if (!fs.existsSync(data_path)) fs.mkdir(data_path, (error) => error && log.info(error));
-if (!fs.existsSync(ref_path)) fs.mkdir(ref_path, (error) => error && log.info(error));
-if (!fs.existsSync(result_path)) fs.mkdir(result_path, (error) => error && log.info(error));
-if (!fs.existsSync(auspice_result_path)) fs.mkdir(auspice_result_path, (error) => error && log.info(error));
-const refs = fs.readdirSync(ref_path)
-log.info(refs)
-
 app.commandLine.appendSwitch("disable-software-rasterizer");
 app.commandLine.appendSwitch('disable-gpu');
-
-
-function file_write(file_path, content, new_file=false){
-  try {
-    if ((fs.existsSync(file_path)) && (new_file==false)){
-      fs.appendFileSync(file_path, content, 'utf-8');
-    } else {
-      fs.writeFileSync(file_path, content, 'utf-8');
-    }
-  } catch (err) {
-    log.info(err)
-    log.info('write error: ', file_path)
-  }
-
-}
-
-function file_write2(file_path, content, new_file=false){
-  if ((fs.existsSync(file_path)) && (new_file==false)){
-    fs.appendFile(file_path, content, 'utf-8', (err) => {log.info(err)});
-    log.info('add')
-  } else {
-    fs.writeFile(file_path, content, 'utf-8', (err) => {log.info(err)});
-    log.info('create')
-  }
-}
 
 function file_read(file_path, read_type='text'){
 
@@ -82,6 +25,20 @@ function file_read(file_path, read_type='text'){
   }
 }
 
+function file_write(file_path, content, new_file=false){
+  try {
+    if ((fs.existsSync(file_path)) && (new_file==false)){
+      fs.appendFileSync(file_path, content, 'utf-8');
+    } else {
+      fs.writeFileSync(file_path, content, 'utf-8');
+    }
+  } catch (err) {
+    log.info(err)
+    log.info('write error: ', file_path)
+  }
+
+}
+
 function read_consensus(file_path){
   read_data = file_read(file_path)
   let data_split = String(read_data).split('\n')
@@ -96,7 +53,31 @@ function read_consensus(file_path){
   return text
 }
 
-//icon_path = path.join(__dirname, '/img/icons/icon.png')
+log.info(app.getPath('userData'))
+log.info(app.getPath('home'))
+log.info(app.getPath('desktop'))
+
+const data_path = app.getPath('home') + '/Hantacon'
+const config_path = data_path + '/config.json'
+//const base_path = appPath
+
+config = file_read(config_path, read_type='json')
+const nextstrain_L_path = config['path']['nextstrain']['htv_L'].replace("{basePath}",data_path)//data_path + '/nextstrain/htv_L'
+const nextstrain_M_path = config['path']['nextstrain']['htv_M'].replace("{basePath}",data_path)//data_path + '/nextstrain/htv_M'
+const nextstrain_S_path = config['path']['nextstrain']['htv_S'].replace("{basePath}",data_path)//data_path + '/nextstrain/htv_S'
+const nextstrain_L_auspice = config['path']['auspice']['htv_L'].replace("{basePath}",data_path)//nextstrain_L_path + '/auspice/htv_L.json'
+const nextstrain_M_auspice = config['path']['auspice']['htv_M'].replace("{basePath}",data_path)//nextstrain_M_path + '/auspice/htv_M.json'
+const nextstrain_S_auspice = config['path']['auspice']['htv_S'].replace("{basePath}",data_path)//nextstrain_S_path + '/auspice/htv_S.json'
+const ref_path = config['path']['ref_path'].replace("{basePath}",data_path)//base_path + '/ref'
+const result_path = config['path']['result_path'].replace("{basePath}",data_path)//data_path + '/result'
+const auspice_result_path = config['path']['auspice_result_path'].replace("{basePath}",data_path)//data_path + '/auspice_result'
+
+const fs = require('fs');
+if (!fs.existsSync(data_path)) fs.mkdir(data_path, (error) => error && log.info(error));
+if (!fs.existsSync(ref_path)) fs.mkdir(ref_path, (error) => error && log.info(error));
+if (!fs.existsSync(result_path)) fs.mkdir(result_path, (error) => error && log.info(error));
+if (!fs.existsSync(auspice_result_path)) fs.mkdir(auspice_result_path, (error) => error && log.info(error));
+const refs = fs.readdirSync(ref_path)
 
 app.whenReady().then(() => {
   const win = new BrowserWindow({
@@ -118,7 +99,7 @@ app.whenReady().then(() => {
   const myWorker = new Worker(path.join(__dirname, 'worker.js'));
   const myWorker2 = new Worker(path.join(__dirname, 'worker2.js'));
   const q_list = []
-  win.webContents.executeJavaScript('document.querySelector("div.config input#basePath").value = "' + base_path +'"') 
+  //win.webContents.executeJavaScript('document.querySelector("div.config input#basePath").value = "' + base_path +'"') 
   win.webContents.executeJavaScript('document.querySelector("div.config input#dataPath").value = "' + data_path +'"') 
 
   function ref_init() {    
@@ -140,9 +121,9 @@ app.whenReady().then(() => {
   }
 
   ref_init()
-  if (!fs.existsSync(data_path+'/main.nf')) fs.copyFile(base_path+'/main.nf', data_path+'/main.nf',(error) => error && log.info(error));
-  if (!fs.existsSync(data_path+'/nextflow.config')) fs.copyFile(base_path+'/nextflow.config', data_path+'/nextflow.config',(error) => error && log.info(error));
-  if (!fs.existsSync(data_path+'/consensus.nf')) fs.copyFile(base_path+'/consensus.nf', data_path+'/consensus.nf',(error) => error && log.info(error));
+  if (!fs.existsSync(data_path+'/main.nf')) fs.copyFile(appPath+'/main.nf', data_path+'/main.nf',(error) => error && log.info(error));
+  if (!fs.existsSync(data_path+'/nextflow.config')) fs.copyFile(appPath+'/nextflow.config', data_path+'/nextflow.config',(error) => error && log.info(error));
+  if (!fs.existsSync(data_path+'/consensus.nf')) fs.copyFile(appPath+'/consensus.nf', data_path+'/consensus.nf',(error) => error && log.info(error));
 
 
   ipcMain.on('openDialog', () => {
@@ -358,7 +339,7 @@ app.whenReady().then(() => {
         }
       });
 
-      myWorker.postMessage(items);
+      myWorker.postMessage(items, config);
     }
   })
 });

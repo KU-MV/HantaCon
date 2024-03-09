@@ -2,7 +2,7 @@ const { parentPort } = require('worker_threads');
 const log = require('electron-log')
 const { spawnSync } = require("child_process");
 
-parentPort.on('message', (items) => {
+parentPort.on('message', (items, config) => {
   //log.info('수신: ',item)
   if ( items.value.length > 0 ){
     for ( let index in items.value ){
@@ -75,9 +75,9 @@ parentPort.on('message', (items) => {
         log.info(value_split)
         log.info(value_split2)
         //nextstrain shell . -c "snakemake -c1"
-        let app = 'micromamba'
+        let app = config['app']['conda']//'micromamba'
         let args = [
-          'run', '-n', 'KU-ONT-Hantavirus-consensus','nextflow',
+          'run', '-n', config['app']['env_name'], 'nextflow',
           //'-log', '"'+data_path+'/nextflow.log"',
           //'-c', '"'+data_path+'/nextflow.config"',
           'run', '"' + data_path + '/main.nf"',
