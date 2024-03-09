@@ -58,10 +58,10 @@ try {
   log.info(app.getPath('home'))
   log.info(appPath)
 
-  const data_path = app.getPath('home') + '/Hantacon'
+  const data_path = app.getPath('home') + '/hantacon'
   const config_path = data_path + '/config.json'
-  if (!fs.existsSync(data_path)) fs.mkdir(data_path, (error) => error && log.info(error));
-  if (!fs.existsSync(config_path)) fs.copyFile(appPath+'/config.json', config_path,(error) => error && log.info(error));
+  if (!fs.existsSync(data_path)) fs.mkdirSync(data_path);
+  if (!fs.existsSync(config_path)) fs.copyFileSync(appPath+'/config.json', config_path, mode=fs.constants.COPYFILE_EXCL);
   config = file_read(config_path, read_type='json')
   log.info(config)
   const nextstrain_L_path = config['path']['nextstrain']['htv_L'].replace("{basePath}",data_path)//data_path + '/nextstrain/htv_L'
@@ -75,12 +75,12 @@ try {
   const auspice_result_path = config['path']['auspice_result'].replace("{basePath}",data_path)//data_path + '/auspice_result'
 
 
-  if (!fs.existsSync(ref_path)) fs.mkdir(ref_path, (error) => error && log.info(error));
-  if (!fs.existsSync(result_path)) fs.mkdir(result_path, (error) => error && log.info(error));
-  if (!fs.existsSync(auspice_result_path)) fs.mkdir(auspice_result_path, (error) => error && log.info(error));
-  if (!fs.existsSync(data_path+'/main.nf')) fs.copyFile(appPath+'/main.nf', data_path+'/main.nf',(error) => error && log.info(error));
-  if (!fs.existsSync(data_path+'/nextflow.config')) fs.copyFile(appPath+'/nextflow.config', data_path+'/nextflow.config',(error) => error && log.info(error));
-  if (!fs.existsSync(data_path+'/consensus.nf')) fs.copyFile(appPath+'/consensus.nf', data_path+'/consensus.nf',(error) => error && log.info(error));
+  if (!fs.existsSync(ref_path)) fs.mkdirSync(ref_path);
+  if (!fs.existsSync(result_path)) fs.mkdirSync(result_path);
+  if (!fs.existsSync(auspice_result_path)) fs.mkdirSync(auspice_result_path);
+  if (!fs.existsSync(data_path+'/main.nf')) fs.copyFileSync(appPath+'/main.nf', data_path+'/main.nf', mode=fs.constants.COPYFILE_EXCL);
+  if (!fs.existsSync(data_path+'/nextflow.config')) fs.copyFileSync(appPath+'/nextflow.config', data_path+'/nextflow.config', mode=fs.constants.COPYFILE_EXCL);
+  if (!fs.existsSync(data_path+'/consensus.nf')) fs.copyFileSync(appPath+'/consensus.nf', data_path+'/consensus.nf', mode=fs.constants.COPYFILE_EXCL);
 
   function ref_init() {    
     const refs = fs.readdirSync(ref_path)
