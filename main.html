@@ -88,18 +88,10 @@
       <div class="sub-option" style="width : 100%; height: 500px; margin-top: 15; justify-content: center; display: flex;">
         <table>
           <tr>
-            <th>virus</th>
-            <td><input type="text" id="virus"></td>
-            <th>accession</th>
-            <td><input type="text" id="accession"></td>
             <th>date</th>
             <td><input type="text" id="date"></td>
-          </tr>
-          <tr>
-            <th>host</th>
-            <td><input type="text" id="host"></td>
-            <th>region</th>
-            <td><input type="text" id="region"></td>
+            <th>province</th>
+            <td><input type="text" id="province"></td>
             <th>country</th>
             <td><input type="text" id="country"></td>
           </tr>
@@ -108,37 +100,21 @@
             <td><input type="text" id="city"></td>
             <th>town</th>
             <td><input type="text" id="town"></td>
-            <th>db</th>
-            <td><input type="text" id="db"></td>
-          </tr>
-          <tr>
-            <th>author</th>
-            <td><input type="text" id="author"></td>
-            <th>url</th>
-            <td><input type="text" id="url"></td>
-            <th>title</th>
-            <td><input type="text" id="title"></td>
-          </tr>
-          <tr>
-            <th>journal</th>
-            <td><input type="text" id="journal"></td>
-            <th>paper_url</th>
-            <td><input type="text" id="paper_url"></td>
           </tr>
         </table>
       </div>
 
       <div class="button">
         <button class="run-auspice disabled-event">
-          <img src="./img/Search.png">
+          <img class="icon" src="./img/Search.png">
           <label>Auspice Start</label>
         </button>
         <button class="run-nextstrain disabled-event">
-          <img src="./img/Search.png">
+          <img class="icon"  src="./img/Search.png">
           <label>Nextstrain Start</label>
         </button>
         <button class="back disabled-event" onclick="showPage(1)">
-          <img src="./img/Search.png">
+          <img class="icon" src="./img/Search.png">
           <label>Back</label>
         </button>
       </div>
@@ -146,24 +122,24 @@
     
 
     </div>
-    <div style="width: 100%; height: 100; margin-top: 10; margin-bottom: 10;">
+    <div class="bottom" style="text-align: center; width: 100%; height: 100; margin-top: 10; margin-bottom: 10;">
       <table>
         <tr>
-          <td>
-            <div style="margin-left: 15; width: 75; display: flex; vertical-align: middle;">
-              <img src="./img/KU.png" style="width: 100%; height: 100%;">
-                          </div>
+          <td class="left">
+            <div>
+              <img class="img" src="./img/KU.png">
+            </div>
           </td>
-          <td>
-            <div  style="width:50%; float:left; margin-left: 15; width: 700; text-align:left;">
+          <td class="center">
+            <div>
               <span>
                 The genomic sequences of the reference viruses were downloaded from the GenBank database and used for this project. If you intend to use original genomic sequences or the results above for publication, please contact Jin-Won Song (jwsong@korea.ac.kr), the principal investigator of this project.
               </span>
             </div>
           </td>
-          <td>
-            <div  style="margin-left: 15;  width: 200; display: flex; vertical-align: middle;">
-              <img src="./img/men.jpg" style="width: 50%; height: 50%;">
+          <td class="right">
+            <div>
+              <img class="img" src="./img/men.jpg">
             </div>
           </td>
         </tr>
@@ -319,24 +295,25 @@
       let dataPath = document.querySelector('div.config input#dataPath').value
       let threshold = document.querySelector('input#threshold').value
       
-      let virus = document.querySelector('div.sub-option input#virus').value
-      let accession = document.querySelector('div.sub-option input#accession').value
+      //let virus = document.querySelector('div.sub-option input#virus').value
+      //let accession = document.querySelector('div.sub-option input#accession').value
       let date = document.querySelector('div.sub-option input#date').value
+      let province = document.querySelector('div.sub-option input#province').value
       
-      let host = document.querySelector('div.sub-option input#host').value
-      let region = document.querySelector('div.sub-option input#region').value
+      //let host = document.querySelector('div.sub-option input#host').value
+      //let region = document.querySelector('div.sub-option input#region').value
       let country = document.querySelector('div.sub-option input#country').value
       
       let city = document.querySelector('div.sub-option input#city').value
       let town = document.querySelector('div.sub-option input#town').value
-      let db = document.querySelector('div.sub-option input#db').value
+      //let db = document.querySelector('div.sub-option input#db').value
       
-      let author = document.querySelector('div.sub-option input#author').value
-      let url = document.querySelector('div.sub-option input#url').value
-      let title = document.querySelector('div.sub-option input#title').value
+      //let author = document.querySelector('div.sub-option input#author').value
+      //let url = document.querySelector('div.sub-option input#url').value
+      //let title = document.querySelector('div.sub-option input#title').value
       
-      let journal = document.querySelector('div.sub-option input#journal').value
-      let paper_url = document.querySelector('div.sub-option input#paper_url').value
+      //let journal = document.querySelector('div.sub-option input#journal').value
+      //let paper_url = document.querySelector('div.sub-option input#paper_url').value
 
       result = []
       for (let item of checkbox_list) {
@@ -360,20 +337,11 @@
             },
             "nextstrain": nextstrain,
             "nextstrain_option": {
-              "virus": virus,
-              "accession": accession,
               "date": date,
-              "host": host,
-              "region": region,
+              "province": province,
               "country": country,
               "city": city,
               "town": town,
-              "db": db,
-              "author": author,
-              "url": url,
-              "title": title,
-              "journal": journal,
-              "paper_url": paper_url
             },
             "basePath": basePath,
             "dataPath": dataPath

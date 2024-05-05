@@ -49,3 +49,24 @@ td input {
   height: 30;
   font-size: 25;
 }
+
+
+div.bottom table {
+  width: 100%
+}
+
+div.bottom td.left {
+  width: 10%;
+}
+
+div.bottom td.center {
+}
+
+div.bottom td.right {
+  width: 15%;
+}
+
+div.bottom img {
+  width: 100%;
+  height: 100%;
+}

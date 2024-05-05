@@ -33,40 +33,39 @@ parentPort.on('message', (items, config) => {
         let metadata_S = nextstrain_S + 'metadata.tsv'
 
         let nextstrain_run = item['nextstrain']
-        let virus = item['nextstrain_option']['virus']
-        let accession = item['nextstrain_option']['accession']
+        //let accession = item['nextstrain_option']['accession']
+
+        let host = ""//item['nextstrain_option']['host']
+        let gec = ""//item['nextstrain_option']['genetic exchange']        
+        let lineage = ""//item['nextstrain_option']['lineage']
+        let hz = ""//item['nextstrain_option']['hybrid zone']
+        let accession = ""//item['nextstrain_option']['hybrid zone']
         let date = item['nextstrain_option']['date']
-
-        let host = item['nextstrain_option']['host']
-        let region = item['nextstrain_option']['region']
+        let province = item['nextstrain_option']['province']
         let country = item['nextstrain_option']['country']
-
         let city = item['nextstrain_option']['city']
         let town = item['nextstrain_option']['town']
-        let db = item['nextstrain_option']['db']
-
-        let author = item['nextstrain_option']['author']
-        let url = item['nextstrain_option']['url']
-        let title = item['nextstrain_option']['title']
-
-        let journal = item['nextstrain_option']['journal']
-        let paper_url = item['nextstrain_option']['paper_url']
+        let db = ""//item['nextstrain_option']['country']
+        let title = ""//item['nextstrain_option']['country']
+        let journal = ""//item['nextstrain_option']['country']
+        let paper_url = ""//item['nextstrain_option']['country']
 
         let metadata_text = result_name + "\t"
-        metadata_text += virus + "\t"
+        metadata_text += host + "\t"
+        metadata_text += gec + "\t"
+        metadata_text += lineage + "\t"
+        metadata_text += hz + "\t"
         metadata_text += accession + "\t"
         metadata_text += date + "\t"
-        metadata_text += host + "\t"
-        metadata_text += region + "\t"
+        metadata_text += province + "\t"
         metadata_text += country + "\t"
         metadata_text += city + "\t"
         metadata_text += town + "\t"
         metadata_text += db + "\t"
-        metadata_text += author + "\t"
-        metadata_text += url + "\t"
         metadata_text += title + "\t"
         metadata_text += journal + "\t"
         metadata_text += paper_url + "\n"
+        
 
 
         //micromamba run -n KU-ONT-Hantavirus-consensus nextflow
