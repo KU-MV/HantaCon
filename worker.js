@@ -2,14 +2,17 @@ const { parentPort } = require('worker_threads');
 const log = require('electron-log')
 const { spawnSync } = require("child_process");
 
-parentPort.on('message', (items, config) => {
+parentPort.on('message', (obj) => {
   //log.info('수신: ',item)
+  config = obj['config']
+  items = obj['items']
+
   if ( items.value.length > 0 ){
     for ( let index in items.value ){
         let item = items.value[index]
         let base_path = item['basePath']
         let data_path = item['dataPath']
-        let ref_path = base_path + '/ref/'
+        let ref_path = data_path + '/ref/'
         let result_path = data_path + '/result/'
         let itemId = item["itemId"]
         let value = item["value"]
@@ -69,7 +72,7 @@ parentPort.on('message', (items, config) => {
 
 
         //micromamba run -n KU-ONT-Hantavirus-consensus nextflow
-        //nextflow ./main.nf --fastq ./SEOV_80-39_10-5.fastq --prefix test --outdir test_output --L ./SEOV_Ref/SEOV_80-39_L.fasta --M ./SEOV_Ref/SEOV_80-39_M.fasta --S ./SEOV_Ref/SEOV_80-39_S.fasta
+        //nextflow ./main.nf --fastq ./HTNV_Aa19-36.fastq --prefix test --outdir test_output --L ./ref/HTNV_76-118/HTNV_76-118_L.fasta --M ./HTNV_76-118/HTNV_76-118_M.fasta --S ./HTNV_76-118/HTNV_76-118_S.fasta
         log.info(value)
         log.info(value_split)
         log.info(value_split2)
@@ -156,3 +159,5 @@ parentPort.on('run_shell', (run_obj) => {
 });
 
 
+//conda run nextflow run "/home/grey/hantacon/main.nf" --fastq /home/grey/hantacon/HTNV_Aa19-36.fastq --prefix HTNV_Aa19-36 --outdir /home/grey/hantacon/result/HTNV_Aa19-36 --L /home/grey/hantacon/ref/HTNV_76-118/HTNV_76-118_L.fasta --M /home/grey/hantacon/ref/HTNV_76-118/HTNV_76-118_M.fasta --S /home/grey/hantacon/ref/HTNV_76-118/HTNV_76-118_S.fasta --low-cov-threshold 10
+//conda run nextflow run "/home/grey/hantacon/main.nf" --fastq /home/grey/hantacon/HTNV_Aa19-36.fastq --prefix HTNV_Aa19-36 --outdir /home/grey/hantacon/result/HTNV_Aa19-36 --L /home/grey/hantacon/ref/HTNV_76-118/HTNV_76-118_L.fasta --M /home/grey/hantacon/ref/HTNV_76-118/HTNV_76-118_M.fasta --S /home/grey/hantacon/ref/HTNV_76-118/HTNV_76-118_S.fasta --low-cov-threshold 10

@@ -74,32 +74,12 @@ try {
   const result_path = config['path']['result'].replace("{basePath}",data_path)//data_path + '/result'
   const auspice_result_path = config['path']['auspice_result'].replace("{basePath}",data_path)//data_path + '/auspice_result'
 
-
   if (!fs.existsSync(ref_path)) fs.mkdirSync(ref_path);
   if (!fs.existsSync(result_path)) fs.mkdirSync(result_path);
   if (!fs.existsSync(auspice_result_path)) fs.mkdirSync(auspice_result_path);
   if (!fs.existsSync(data_path+'/main.nf')) fs.copyFileSync(appPath+'/main.nf', data_path+'/main.nf', mode=fs.constants.COPYFILE_EXCL);
   if (!fs.existsSync(data_path+'/nextflow.config')) fs.copyFileSync(appPath+'/nextflow.config', data_path+'/nextflow.config', mode=fs.constants.COPYFILE_EXCL);
   if (!fs.existsSync(data_path+'/consensus.nf')) fs.copyFileSync(appPath+'/consensus.nf', data_path+'/consensus.nf', mode=fs.constants.COPYFILE_EXCL);
-
-  function ref_init() {    
-    const refs = fs.readdirSync(ref_path)
-    for ( let ref in refs ) {
-      let ref_dir = ref_path + '/' + refs[ref]
-      //log.info(ref_dir)
-      files = fs.readdirSync(ref_dir)
-      ref_files = []
-      for ( ref_file in files ) {
-        ref_files.push('"'+files[ref_file]+'"')
-      }
-  
-      //log.info(ref_files)
-      log.info(refs[ref] + '",[' + ref_files +'])')
-      log.info(ref_files.length)
-      log.info('refAdd("' + refs[ref] + '",[' + ref_files +'])')
-      win.webContents.executeJavaScript('refAdd("' + refs[ref] + '",[' + ref_files +'])')
-    }
-  }
 
   app.whenReady().then(() => {
     const win = new BrowserWindow({
@@ -123,10 +103,28 @@ try {
     const q_list = []
     //win.webContents.executeJavaScript('document.querySelector("div.config input#basePath").value = "' + base_path +'"') 
     win.webContents.executeJavaScript('document.querySelector("div.config input#dataPath").value = "' + data_path +'"') 
-  
-  
+    
+    function ref_init() {    
+      const refs = fs.readdirSync(ref_path)
+      for ( let ref in refs ) {
+        let ref_dir = ref_path + '/' + refs[ref]
+        //log.info(ref_dir)
+        files = fs.readdirSync(ref_dir)
+        ref_files = []
+        for ( ref_file in files ) {
+          ref_files.push('"'+files[ref_file]+'"')
+        }
+    
+        //log.info(ref_files)
+        log.info(refs[ref] + '",[' + ref_files +'])')
+        log.info(ref_files.length)
+        log.info('refAdd("' + refs[ref] + '",[' + ref_files +'])')
+        win.webContents.executeJavaScript('refAdd("' + refs[ref] + '",[' + ref_files +'])')
+      }
+    }
+
     ref_init()
-  
+
     ipcMain.on('openDialog', () => {
       dialog.showOpenDialog({defaultPath: data_path, properties: ['openFile', 'multiSelections'], filters: [{ name: 'fastq', extensions: ['fastq']} ] }).then((obj) => {
         log.info(obj.filePaths)
@@ -339,8 +337,11 @@ try {
             }
           }
         });
-  
-        myWorker.postMessage(items, config);
+        post_obj = {
+          "items": items,
+          "config": config
+        }
+        myWorker.postMessage(post_obj);
       }
     })
   });
@@ -350,3 +351,8 @@ try {
   app.exit()
 }
 
+
+
+
+//cat ./ref/HTNV_76-118/HTNV_76-118_L.fasta ./ref/HTNV_76-118/HTNV_76-118_M.fasta ./ref/HTNV_76-118/HTNV_76-118_S.fasta
+//conda run nextflow run "/home/grey/hantacon/main.nf" --fastq /home/grey/hantacon/HTNV_Aa19-36.fastq --prefix HTNV_Aa19-36 --outdir /home/grey/hantacon/result/HTNV_Aa19-36 --L ./ref/HTNV_76-118/HTNV_76-118_L.fasta --M ./ref/HTNV_76-118/HTNV_76-118_M.fasta --S ./ref/HTNV_76-118/HTNV_76-118_S.fasta --low-cov-threshold 10

@@ -95,7 +95,7 @@ process mapReads {
         path "bams/${params.prefix}_M.bam", emit: M
         path "bams/${params.prefix}_S.bam", emit: S
     """
-    mini_align -t 8 -p ${params.prefix} -i $fastq -r $all_seg -m -f -M 2 -S 4 -O 4,24 -E 2,1
+    mini_align -t 4 -I 2G -p ${params.prefix} -i $fastq -r $all_seg -m -f -M 2 -S 4 -O 4,24 -E 2,1
     samtools sort ${params.prefix}.bam -o ${params.prefix}.sort.bam
     samtools index ${params.prefix}.sort.bam
 
