@@ -4,10 +4,14 @@ const path = require('path');
 const log = require('electron-log')
 const appPath = app.isPackaged ? process.execPath.replace('/'+app.getName(),'') : app.getAppPath();
 const fs = require('fs');
+const unzipper = require('unzipper');
+
 //log.info(process.execPath)
 //log.info(app.getAppPath())
 app.commandLine.appendSwitch("disable-software-rasterizer");
 app.commandLine.appendSwitch('disable-gpu');
+
+
 
 function file_read(file_path, read_type='text'){
 
@@ -64,22 +68,70 @@ try {
   if (!fs.existsSync(config_path)) fs.copyFileSync(appPath+'/config.json', config_path, mode=fs.constants.COPYFILE_EXCL);
   config = file_read(config_path, read_type='json')
   log.info(config)
-  const nextstrain_L_path = config['path']['nextstrain']['htv_L'].replace("{basePath}",data_path)//data_path + '/nextstrain/htv_L'
-  const nextstrain_M_path = config['path']['nextstrain']['htv_M'].replace("{basePath}",data_path)//data_path + '/nextstrain/htv_M'
-  const nextstrain_S_path = config['path']['nextstrain']['htv_S'].replace("{basePath}",data_path)//data_path + '/nextstrain/htv_S'
-  const nextstrain_L_auspice = config['path']['auspice']['htv_L'].replace("{basePath}",data_path)//nextstrain_L_path + '/auspice/htv_L.json'
-  const nextstrain_M_auspice = config['path']['auspice']['htv_M'].replace("{basePath}",data_path)//nextstrain_M_path + '/auspice/htv_M.json'
-  const nextstrain_S_auspice = config['path']['auspice']['htv_S'].replace("{basePath}",data_path)//nextstrain_S_path + '/auspice/htv_S.json'
+
+  //const nextstrain_L_path = config['path']['nextstrain']['htv_L'].replace("{basePath}",data_path)//data_path + '/nextstrain/htv_L'
+  //const nextstrain_M_path = config['path']['nextstrain']['htv_M'].replace("{basePath}",data_path)//data_path + '/nextstrain/htv_M'
+  //const nextstrain_S_path = config['path']['nextstrain']['htv_S'].replace("{basePath}",data_path)//data_path + '/nextstrain/htv_S'
+  //const nextstrain_L_auspice = config['path']['auspice']['htv_L'].replace("{basePath}",data_path)//nextstrain_L_path + '/auspice/htv_L.json'
+  //const nextstrain_M_auspice = config['path']['auspice']['htv_M'].replace("{basePath}",data_path)//nextstrain_M_path + '/auspice/htv_M.json'
+  //const nextstrain_S_auspice = config['path']['auspice']['htv_S'].replace("{basePath}",data_path)//nextstrain_S_path + '/auspice/htv_S.json'
   const ref_path = config['path']['ref'].replace("{basePath}",data_path)//base_path + '/ref'
   const result_path = config['path']['result'].replace("{basePath}",data_path)//data_path + '/result'
   const auspice_result_path = config['path']['auspice_result'].replace("{basePath}",data_path)//data_path + '/auspice_result'
 
+  const ref1 = ref_path + '/HTNV_76-118'
+  const ref1_L = '/HTNV_76-118/HTNV_76-118_L.fasta'
+  const ref1_M = '/HTNV_76-118/HTNV_76-118_M.fasta'
+  const ref1_S = '/HTNV_76-118/HTNV_76-118_S.fasta'
+  
+  const ref2 = ref_path + '/SEOV'
+  const ref2_L = '/SEOV/SEOV_80-39_L.fasta'
+  const ref2_M = '/SEOV/SEOV_80-39_M.fasta'
+  const ref2_S = '/SEOV/SEOV_80-39_S.fasta'
+
   if (!fs.existsSync(ref_path)) fs.mkdirSync(ref_path);
+  if (!fs.existsSync(ref1)) fs.mkdirSync(ref1);
+  if (!fs.existsSync(ref_path+ref1_L)) fs.copyFileSync(appPath+'/ref'+ref1_L, ref_path+ref1_L, mode=fs.constants.COPYFILE_EXCL);
+  if (!fs.existsSync(ref_path+ref1_M)) fs.copyFileSync(appPath+'/ref'+ref1_M, ref_path+ref1_M, mode=fs.constants.COPYFILE_EXCL);
+  if (!fs.existsSync(ref_path+ref1_S)) fs.copyFileSync(appPath+'/ref'+ref1_S, ref_path+ref1_S, mode=fs.constants.COPYFILE_EXCL);
+
+  if (!fs.existsSync(ref2)) fs.mkdirSync(ref2);
+  if (!fs.existsSync(ref_path+ref2_L)) fs.copyFileSync(appPath+'/ref'+ref2_L, ref_path+ref2_L, mode=fs.constants.COPYFILE_EXCL);
+  if (!fs.existsSync(ref_path+ref2_M)) fs.copyFileSync(appPath+'/ref'+ref2_M, ref_path+ref2_M, mode=fs.constants.COPYFILE_EXCL);
+  if (!fs.existsSync(ref_path+ref2_S)) fs.copyFileSync(appPath+'/ref'+ref2_S, ref_path+ref2_S, mode=fs.constants.COPYFILE_EXCL);
+
   if (!fs.existsSync(result_path)) fs.mkdirSync(result_path);
   if (!fs.existsSync(auspice_result_path)) fs.mkdirSync(auspice_result_path);
   if (!fs.existsSync(data_path+'/main.nf')) fs.copyFileSync(appPath+'/main.nf', data_path+'/main.nf', mode=fs.constants.COPYFILE_EXCL);
   if (!fs.existsSync(data_path+'/nextflow.config')) fs.copyFileSync(appPath+'/nextflow.config', data_path+'/nextflow.config', mode=fs.constants.COPYFILE_EXCL);
   if (!fs.existsSync(data_path+'/consensus.nf')) fs.copyFileSync(appPath+'/consensus.nf', data_path+'/consensus.nf', mode=fs.constants.COPYFILE_EXCL);
+  
+  function unzip(zipFilePath, extractDir){
+    fs.createReadStream(zipFilePath)
+    .pipe(unzipper.Parse())
+    .on('entry', entry => {
+        const fileName = entry.path;
+        const type = entry.type; // 'Directory' or 'File'
+        const destination = `${extractDir}/${fileName}`;
+  
+        // 파일 덮어쓰기
+        if (type === 'File') {
+            entry.pipe(fs.createWriteStream(destination, { overwrite: true }));
+        } else if (type === 'Directory') {
+            fs.mkdirSync(destination, { recursive: true });
+        }
+    })
+    .promise()
+    .then(() => {
+        console.log('ZIP 파일 추출 완료');
+    })
+    .catch(err => {
+        console.error('ZIP 파일 추출 중 오류 발생:', err);
+    });
+  }
+
+  const zipFilePath = appPath + '/nextstrain.zip'
+  const nextstrain_path = data_path + '/nextstrain'
 
   app.whenReady().then(() => {
     const win = new BrowserWindow({
@@ -146,6 +198,7 @@ try {
     ipcMain.on('auspice', () => {
       log.info('auspice')
       win.webContents.executeJavaScript('elementDisabled(true)')
+      unzip(zipFilePath, data_path)
       workdirs = [nextstrain_L_path, nextstrain_M_path, nextstrain_S_path]
       nextstrain_works = []
       for (workdir_index in workdirs) {

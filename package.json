@@ -12,7 +12,10 @@
   "build": {
     "productName": "hantacon",
     "linux": {
-      "target": ["Appimage","deb"],
+      "target": [
+        "Appimage",
+        "deb"
+      ],
       "category": "Utility",
       "description": "The HanaCon was developed and maintained by Jin-Won Song at Korea University, Republic of Korea.",
       "icon": "./build/256x256.png",
@@ -44,6 +47,10 @@
       {
         "from": "./ref",
         "to": "./ref"
+      },
+      {
+        "from": "./nextstrain.zip",
+        "to": "./nextstrain.zip"
       }
     ],
     "files": [
@@ -51,6 +58,7 @@
       "./main.html",
       "./preload.js",
       "./jquery-3.7.0.min.js",
+      "./nextstrain.zip",
       "./worker.js",
       "./worker2.js",
       "./main.css",
@@ -66,6 +74,7 @@
   "dependencies": {
     "election": "0.0.0",
     "electron-log": "^4.4.8",
-    "electron-packager": "^15.0.0"
+    "electron-packager": "^15.0.0",
+    "unzipper": "^0.11.5"
   }
 }

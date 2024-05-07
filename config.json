@@ -7,17 +7,7 @@
   "path": {
     "ref": "{basePath}/ref",
     "result": "{basePath}/result",
-    "auspice_result": "{basePath}/auspice_result",
-    "nextstrain": {
-        "htv_L": "{basePath}/nextstrain/htv_L",
-        "htv_M": "{basePath}/nextstrain/htv_M",
-        "htv_S": "{basePath}/nextstrain/htv_S"
-    },
-    "auspice": {
-        "htv_L": "{basePath}/nextstrain/auspice/htv_L.json",
-        "htv_M": "{basePath}/nextstrain/auspice/htv_M.json",
-        "htv_S": "{basePath}/nextstrain/auspice/htv_S.json"
-    }
+    "auspice_result": "{basePath}/auspice_result"
   }
 
 }
