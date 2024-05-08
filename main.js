@@ -131,6 +131,24 @@ try {
     });
   }
 
+  function removeDirectory(directoryPath) {
+    // Check if directory exists
+    if (fs.existsSync(directoryPath)) {
+        // Remove directory
+        fs.rmdir(directoryPath, { recursive: true }, (err) => {
+            if (err) {
+                // Handle error
+                dialog.showErrorBox('Error', err.message);
+                return;
+            }
+            console.log('Directory removed successfully');
+        });
+    } else {
+        console.log('Directory does not exist');
+    }
+  }
+
+
   const zipFilePath = appPath + '/nextstrain.zip'
   const nextstrain_path = data_path + '/nextstrain'
   const nextstrain_L_path = data_path + '/nextstrain/htv_L'
@@ -139,6 +157,7 @@ try {
   const nextstrain_L_auspice = nextstrain_L_path + '/auspice/htv_L.json'
   const nextstrain_M_auspice = nextstrain_M_path + '/auspice/htv_M.json'
   const nextstrain_S_auspice = nextstrain_S_path + '/auspice/htv_S.json'
+
 
   app.whenReady().then(() => {
     const win = new BrowserWindow({
@@ -251,7 +270,7 @@ try {
     })
   
     ipcMain.on('runShell', (event, items) => {
-  
+      removeDirectory(nextstrain_path)
       let nextstrain_chk = false
       log.info('아이템: ',items)
       if ( items.value.length > 0 ){
