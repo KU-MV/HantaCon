@@ -75,6 +75,7 @@ try {
   //const nextstrain_L_auspice = config['path']['auspice']['htv_L'].replace("{basePath}",data_path)//nextstrain_L_path + '/auspice/htv_L.json'
   //const nextstrain_M_auspice = config['path']['auspice']['htv_M'].replace("{basePath}",data_path)//nextstrain_M_path + '/auspice/htv_M.json'
   //const nextstrain_S_auspice = config['path']['auspice']['htv_S'].replace("{basePath}",data_path)//nextstrain_S_path + '/auspice/htv_S.json'
+
   const ref_path = config['path']['ref'].replace("{basePath}",data_path)//base_path + '/ref'
   const result_path = config['path']['result'].replace("{basePath}",data_path)//data_path + '/result'
   const auspice_result_path = config['path']['auspice_result'].replace("{basePath}",data_path)//data_path + '/auspice_result'
@@ -132,6 +133,12 @@ try {
 
   const zipFilePath = appPath + '/nextstrain.zip'
   const nextstrain_path = data_path + '/nextstrain'
+  const nextstrain_L_path = data_path + '/nextstrain/htv_L'
+  const nextstrain_M_path = data_path + '/nextstrain/htv_M'
+  const nextstrain_S_path = data_path + '/nextstrain/htv_S'
+  const nextstrain_L_auspice = nextstrain_L_path + '/auspice/htv_L.json'
+  const nextstrain_M_auspice = nextstrain_M_path + '/auspice/htv_M.json'
+  const nextstrain_S_auspice = nextstrain_S_path + '/auspice/htv_S.json'
 
   app.whenReady().then(() => {
     const win = new BrowserWindow({
