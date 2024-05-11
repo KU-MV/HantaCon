@@ -14,7 +14,7 @@ app.commandLine.appendSwitch('disable-gpu');
 
 
 function file_read(file_path, read_type='text'){
-
+  log.info(file_path)
   try {
     data = fs.readFileSync(file_path, 'utf-8')
 
@@ -51,7 +51,7 @@ function read_consensus(file_path){
   text = ""
   for ( line_index in data_split ) {
     if (line_index > 0) {
-      text += data_split[line_index]
+      text += data_split[line_index] + '\n'
     }
   }
 
@@ -78,7 +78,7 @@ try {
 
   const ref_path = config['path']['ref'].replace("{basePath}",data_path)//base_path + '/ref'
   const result_path = config['path']['result'].replace("{basePath}",data_path)//data_path + '/result'
-  const auspice_result_path = config['path']['auspice_result'].replace("{basePath}",data_path)//data_path + '/auspice_result'
+  //const auspice_result_path = config['path']['auspice_result'].replace("{basePath}",data_path)//data_path + '/auspice_result'
 
   const ref1 = ref_path + '/HTNV_76-118'
   const ref1_L = '/HTNV_76-118/HTNV_76-118_L.fasta'
@@ -102,10 +102,11 @@ try {
   if (!fs.existsSync(ref_path+ref2_S)) fs.copyFileSync(appPath+'/ref'+ref2_S, ref_path+ref2_S, mode=fs.constants.COPYFILE_EXCL);
 
   if (!fs.existsSync(result_path)) fs.mkdirSync(result_path);
-  if (!fs.existsSync(auspice_result_path)) fs.mkdirSync(auspice_result_path);
+  //if (!fs.existsSync(auspice_result_path)) fs.mkdirSync(auspice_result_path);
   if (!fs.existsSync(data_path+'/main.nf')) fs.copyFileSync(appPath+'/main.nf', data_path+'/main.nf', mode=fs.constants.COPYFILE_EXCL);
   if (!fs.existsSync(data_path+'/nextflow.config')) fs.copyFileSync(appPath+'/nextflow.config', data_path+'/nextflow.config', mode=fs.constants.COPYFILE_EXCL);
   if (!fs.existsSync(data_path+'/consensus.nf')) fs.copyFileSync(appPath+'/consensus.nf', data_path+'/consensus.nf', mode=fs.constants.COPYFILE_EXCL);
+  if (!fs.existsSync(data_path+'/nextstrain.nf')) fs.copyFileSync(appPath+'/nextstrain.nf', data_path+'/nextstrain.nf', mode=fs.constants.COPYFILE_EXCL);
   
   function unzip(zipFilePath, extractDir){
     fs.createReadStream(zipFilePath)
@@ -135,16 +136,17 @@ try {
     // Check if directory exists
     if (fs.existsSync(directoryPath)) {
         // Remove directory
-        fs.rmdir(directoryPath, { recursive: true }, (err) => {
+        fs.rmdirSync(directoryPath, { recursive: true }, (err) => {
             if (err) {
                 // Handle error
-                dialog.showErrorBox('Error', err.message);
+                log.info('Error', err.message);
+                //dialog.showErrorBox('Error', err.message);
                 return;
             }
-            console.log('Directory removed successfully');
+            log.info('Directory removed successfully');
         });
     } else {
-        console.log('Directory does not exist');
+      log.info('Directory does not exist');
     }
   }
 
@@ -154,15 +156,8 @@ try {
   const nextstrain_L_path = data_path + '/nextstrain/htv_L'
   const nextstrain_M_path = data_path + '/nextstrain/htv_M'
   const nextstrain_S_path = data_path + '/nextstrain/htv_S'
-  const nextstrain_L_auspice = nextstrain_L_path + '/auspice/htv_L.json'
-  const nextstrain_M_auspice = nextstrain_M_path + '/auspice/htv_M.json'
-  const nextstrain_S_auspice = nextstrain_S_path + '/auspice/htv_S.json'
-  const metadata_L = nextstrain_L_path + "/data/metadata.tsv"
-  const metadata_M = nextstrain_M_path + "/data/metadata.tsv"
-  const metadata_S = nextstrain_S_path + "/data/metadata.tsv"
-  const sequence_L = nextstrain_L_path + "/data/sequence.fasta"
-  const sequence_M = nextstrain_M_path + "/data/sequence.fasta"
-  const sequence_S = nextstrain_S_path + "/data/sequence.fasta"
+
+  if (!fs.existsSync(nextstrain_path)) unzip(zipFilePath, data_path);
 
   app.whenReady().then(() => {
     const win = new BrowserWindow({
@@ -221,6 +216,18 @@ try {
       })
     });
   
+    ipcMain.on('openDialog2', () => {
+      dialog.showOpenDialog({defaultPath: data_path + '/result', properties: ['openFile'], filters: [{ name: 'fasta', extensions: ['fasta']} ] }).then((obj) => {
+        log.info(obj)
+        log.info(obj.filePaths)
+        if ( obj.filePaths.length > 0 ){
+          let item = obj.filePaths[0]
+          log.info(item)
+          win.webContents.executeJavaScript('fileselect("'+item+'")')
+        }
+      })
+    });
+
     ipcMain.on('baseOpen', () => {
       log.info('baseOpen')
       shell.openPath(data_path)
@@ -231,74 +238,101 @@ try {
       strain_type = obj['strain_type']
       file_path = obj['file_path']
       reset = obj['reset']
+
+
       strain = obj['strain']
+      host = ''
+      gec = ''
+      lineage = ''
+      hz = ''
+      accession = ''
       date = obj['date']
       country = obj['country']
       province = obj['province']
       city = obj['city']
       town = obj['town']
-
-      if ( reset == "Yes" ) {
-        removeDirectory(nextstrain_path)
-        unzip(zipFilePath, data_path)
-      }
+      db = ''
+      title = ''
+      journal = ''
+      paper_url = ''
+    
       
-      let consensus_data = read_consensus(file_path)
-      let input_text = ">" + result_name + "\n" + consensus_data + "\n"
-      log.info(input_text)
-      log.info(metadata)
-
       if ( strain_type = "L" ) {
-        sequence_path = sequence_L
-        metadata_path = metadata_L
+        sequence_path = nextstrain_L_path + "/data/sequence.fasta"
+        metadata_path = nextstrain_L_path + "/data/metadata.tsv"
         workdir = nextstrain_L_path
       } else if ( strain_type = "M" ) {
-        sequence_path = sequence_M
-        metadata_path = metadata_M
+        sequence_path = nextstrain_M_path + "/data/sequence.fasta"
+        metadata_path = nextstrain_M_path + "/data/metadata.tsv"
         workdir = nextstrain_M_path
 
       } else if ( strain_type = "S" ) {
-        sequence_path = sequence_S
-        metadata_path = metadata_S
+        sequence_path = nextstrain_S_path + "/data/sequence.fasta"
+        metadata_path = nextstrain_S_path + "/data/metadata.tsv"
         workdir = nextstrain_S_path
       }
 
-      file_write(file_path=sequence_path, content=input_text)
-      file_write(file_path=metadata_path, content=metadata)
-
-      run_obj = {
-        'app': 'nextstrain',
-        'args': ['shell','.','-c','snakemake -c1'],
-        'workdir': workdir
-      }
-
-      folderPath_result = workdir+"/results"
-      folderPath_auspice = workdir+"/auspice"
-      if (fs.existsSync(folderPath_result)) {
-          fs.rmSync(folderPath_result, { recursive: true });
-      }
-      if (fs.existsSync(folderPath_auspice)) {
-          fs.rmSync(folderPath_auspice, { recursive: true });
+      if ( reset === "Yes" ) {
+        removeDirectory(nextstrain_path)
+        unzip(zipFilePath, data_path)
+      } else {
+        folderPath_result = workdir+"/results"
+        folderPath_auspice = workdir+"/auspice"
+        if (fs.existsSync(folderPath_result)) {
+            fs.rmSync(folderPath_result, { recursive: true });
         }
+        if (fs.existsSync(folderPath_auspice)) {
+            fs.rmSync(folderPath_auspice, { recursive: true });
+          }
+      }
 
-      nextstrain_works = [run_obj]
-      myWorker2.postMessage(nextstrain_works)
+      let consensus_data = read_consensus(file_path)
+      let input_text = ">" + strain + "\n" + consensus_data + "\n"
+
+      let metadata_text = '\n' + strain + "\t"
+      metadata_text += host + "\t"
+      metadata_text += gec + "\t"
+      metadata_text += lineage + "\t"
+      metadata_text += hz + "\t"
+      metadata_text += accession + "\t"
+      metadata_text += date + "\t"
+      metadata_text += province + "\t"
+      metadata_text += country + "\t"
+      metadata_text += city + "\t"
+      metadata_text += town + "\t"
+      metadata_text += db + "\t"
+      metadata_text += title + "\t"
+      metadata_text += journal + "\t"
+      metadata_text += paper_url + "\n"
+
+      log.info(metadata_text)
+      file_write(file_path=sequence_path, content=input_text)
+      file_write(file_path=metadata_path, content=metadata_text)
+
+      run_obj = [
+        {
+          'app': 'micromamba',
+          'args': ['run','-n',config['app']['env_name'], 'nextflow', data_path+'/nextstrain.nf','--basepath', workdir],
+          'workdir': data_path
+        },
+        {
+         'app': 'nextstrain',
+         'args': ['shell','.','-c','snakemake -c1'],
+         'workdir': workdir
+        }
+      ]
+
+      win.webContents.executeJavaScript('elementDisabled(true)')
+      myWorker2.postMessage(run_obj)
       myWorker2.on('message', (nextstrain_result) => {
         //nextstrain shell . -c "snakemake -c1"
-        log.info('stdin: ', nextstrain_result['result'].stdin)
-        log.info('stdout: ', nextstrain_result['result'].stdout)
-        log.info('stderr: ', nextstrain_result['result'].stderr)
-        nextstrain_works.pop(nextstrain_result['item'])
-        if ( nextstrain_works.length == 0 ){
-          win.webContents.executeJavaScript('elementDisabled(false)')
-          win.webContents.executeJavaScript('alert("Complete")')
-          let currentDate = new Date();
-          let formattedDate = auspice_result_path + '/' + currentDate.toISOString().replace(/T/,'_').replace(/\..+/, '').replace('-','_').replace('-','_').replace(':','_').replace(':','_');
-          fs.mkdirSync(formattedDate)
-          if (fs.existsSync(nextstrain_L_auspice)) fs.copyFile(nextstrain_L_auspice, formattedDate+'/htv_L.json',(error) => error && log.info(error));
-          if (fs.existsSync(nextstrain_M_auspice)) fs.copyFile(nextstrain_M_auspice, formattedDate+'/htv_M.json',(error) => error && log.info(error));
-          if (fs.existsSync(nextstrain_S_auspice)) fs.copyFile(nextstrain_S_auspice, formattedDate+'/htv_S.json',(error) => error && log.info(error));
-        }
+        log.info(nextstrain_result)
+        //log.info('stdin: ', nextstrain_result[0]['result'].stdin)
+        //log.info('stdout: ', nextstrain_result[0]['result'].stdout)
+        //log.info('stderr: ', nextstrain_result[0]['result'].stderr)
+        //log.info('error: ', nextstrain_result[0]['result'].error)
+        win.webContents.executeJavaScript('elementDisabled(false)')
+        win.webContents.executeJavaScript('alert("Complete")')
       })
     }
     )

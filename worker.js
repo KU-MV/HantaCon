@@ -25,49 +25,49 @@ parentPort.on('message', (obj) => {
         let option_M = ref_path + option_name + '/' + option['M']
         let option_S = ref_path + option_name + '/' + option['S']
         let threshold = item['threshold']
-        let nextstrain_L = data_path + '/nextstrain/htv_L/data/'
-        let nextstrain_M = data_path + '/nextstrain/htv_M/data/'
-        let nextstrain_S = data_path + '/nextstrain/htv_S/data/'
-        let sequence_L = nextstrain_L + 'sequence.fasta'
-        let metadata_L = nextstrain_L + 'metadata.tsv'
-        let sequence_M = nextstrain_M + 'sequence.fasta'
-        let metadata_M = nextstrain_M + 'metadata.tsv'
-        let sequence_S = nextstrain_S + 'sequence.fasta'
-        let metadata_S = nextstrain_S + 'metadata.tsv'
+        //let nextstrain_L = data_path + '/nextstrain/htv_L/data/'
+        //let nextstrain_M = data_path + '/nextstrain/htv_M/data/'
+        //let nextstrain_S = data_path + '/nextstrain/htv_S/data/'
+        //let sequence_L = nextstrain_L + 'sequence.fasta'
+        //let metadata_L = nextstrain_L + 'metadata.tsv'
+        //let sequence_M = nextstrain_M + 'sequence.fasta'
+        //let metadata_M = nextstrain_M + 'metadata.tsv'
+        //let sequence_S = nextstrain_S + 'sequence.fasta'
+        //let metadata_S = nextstrain_S + 'metadata.tsv'
 
-        let nextstrain_run = item['nextstrain']
+        //let nextstrain_run = item['nextstrain']
         //let accession = item['nextstrain_option']['accession']
 
-        let host = ""//item['nextstrain_option']['host']
-        let gec = ""//item['nextstrain_option']['genetic exchange']        
-        let lineage = ""//item['nextstrain_option']['lineage']
-        let hz = ""//item['nextstrain_option']['hybrid zone']
-        let accession = ""//item['nextstrain_option']['hybrid zone']
-        let date = item['nextstrain_option']['date']
-        let province = item['nextstrain_option']['province']
-        let country = item['nextstrain_option']['country']
-        let city = item['nextstrain_option']['city']
-        let town = item['nextstrain_option']['town']
-        let db = ""//item['nextstrain_option']['country']
-        let title = ""//item['nextstrain_option']['country']
-        let journal = ""//item['nextstrain_option']['country']
-        let paper_url = ""//item['nextstrain_option']['country']
+        //let host = ""//item['nextstrain_option']['host']
+        //let gec = ""//item['nextstrain_option']['genetic exchange']        
+        //let lineage = ""//item['nextstrain_option']['lineage']
+        //let hz = ""//item['nextstrain_option']['hybrid zone']
+        //let accession = ""//item['nextstrain_option']['hybrid zone']
+        //let date = item['nextstrain_option']['date']
+        //let province = item['nextstrain_option']['province']
+        //let country = item['nextstrain_option']['country']
+        //let city = item['nextstrain_option']['city']
+        //let town = item['nextstrain_option']['town']
+        //let db = ""//item['nextstrain_option']['country']
+        //let title = ""//item['nextstrain_option']['country']
+        //let journal = ""//item['nextstrain_option']['country']
+        //let paper_url = ""//item['nextstrain_option']['country']
 
-        let metadata_text = result_name + "\t"
-        metadata_text += host + "\t"
-        metadata_text += gec + "\t"
-        metadata_text += lineage + "\t"
-        metadata_text += hz + "\t"
-        metadata_text += accession + "\t"
-        metadata_text += date + "\t"
-        metadata_text += province + "\t"
-        metadata_text += country + "\t"
-        metadata_text += city + "\t"
-        metadata_text += town + "\t"
-        metadata_text += db + "\t"
-        metadata_text += title + "\t"
-        metadata_text += journal + "\t"
-        metadata_text += paper_url + "\n"
+        //let metadata_text = result_name + "\t"
+        //metadata_text += host + "\t"
+        //metadata_text += gec + "\t"
+        //metadata_text += lineage + "\t"
+        //metadata_text += hz + "\t"
+        //metadata_text += accession + "\t"
+        //metadata_text += date + "\t"
+        //metadata_text += province + "\t"
+        //metadata_text += country + "\t"
+        //metadata_text += city + "\t"
+        //metadata_text += town + "\t"
+        //metadata_text += db + "\t"
+        //metadata_text += title + "\t"
+        //metadata_text += journal + "\t"
+        //metadata_text += paper_url + "\n"
         
 
 
@@ -125,20 +125,6 @@ parentPort.on('message', (obj) => {
             'L': consensus_L,
             'M': consensus_M,
             'S': consensus_S
-          },
-          'nextstrain': nextstrain_run,
-          'metadata': {
-            'data': metadata_text,
-            'L': metadata_L,
-            'M': metadata_M,
-            'S': metadata_S,
-            
-          },
-          'sequence': {
-            'L': sequence_L,
-            'M': sequence_M,
-            'S': sequence_S,
-
           }
         }
         

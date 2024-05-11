@@ -31,7 +31,7 @@
       <button class="step-0-next" onclick="showPage(1)">
         <label>Extract sequence</label>
       </button>
-      <button class="run disabled-event" onclick="showPage(2)">
+      <button class="step-1-next disabled-event" onclick="showPage(2)">
         <img class="button" src="./img/nextstrain2.png">
         <label></label>
       </button>        
@@ -101,9 +101,8 @@
           <tr>
             <th>*File<br><label style="font-size: 12;">(required)</label></th>
             <td><label for="file">
-              <div class="file">Select</div>
+              <div class="file" value="">Select</div>
             </label>
-            <input type="file" name="file" id="file" accept="'.fasta,"></td>
             <th>Data reset</th>
             <td> 
               <select id="reset">
@@ -182,17 +181,9 @@
       $( "input#date" ).datepicker({"dateFormat":'yy-mm-dd'});
     })
 
-    $(function() {
-  
-
-      $("td input#file").change(function(e){
-        filepath = $('input[type=file]').val()
-        filename = $('input[type=file]')[0].files[0].name
-        document.querySelector('td div.file').textContent = filename
-
-        });
+    document.querySelector('td div.file').addEventListener('click', () => {
+      file_find.openDialog2();
     });
-
 
     document.querySelector('button.file').addEventListener('click', () => {
       file_find.openDialog();
@@ -203,6 +194,7 @@
     //});
 
     document.querySelector('button.run').addEventListener('click', () => {
+      console.log('test')
       file_find.runShell(chkItems());
     });
 
@@ -210,7 +202,7 @@
       //let virus = document.querySelector('div.sub-option input#virus').value
       //let accession = document.querySelector('div.sub-option input#accession').value
       let strain_type = document.querySelector('div.sub-option select#type').value
-      let file_path = filepath = $('input[type=file]').val()
+      let file_path = document.querySelector('div.sub-option td div.file').value
       let reset = document.querySelector('div.sub-option select#reset').value
       let strain = document.querySelector('div.sub-option input#strain').value
       let date = document.querySelector('div.sub-option input#date').value
@@ -257,6 +249,13 @@
     function progress_result(value){
       document.querySelector('progress').value = 0
       document.querySelector('progress').max = value
+    }
+
+    function fileselect(file) {
+      file_name = file
+      file_path = file
+      document.querySelector('td div.file').textContent = file_name
+      document.querySelector('td div.file').value = file_path
     }
 
     function additems(itme_name) {

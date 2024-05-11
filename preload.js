@@ -8,12 +8,16 @@ contextBridge.exposeInMainWorld('file_find', {
     ipcRenderer.send('openDialog');
   },
 
+  openDialog2() {
+    ipcRenderer.send('openDialog2');
+  },
+
   runShell(items) {
     ipcRenderer.send('runShell', {value: items});
   },
 
   runShell2(obj) {
-    ipcRenderer.send('runShell2', {value: obj});
+    ipcRenderer.send('runShell2', obj);
   },
 
   auspice() {
