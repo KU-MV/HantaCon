@@ -9,6 +9,23 @@ div.step-2 td {
   padding-right: 50px;
 }
 
+div.tab {
+  width : 100%;
+  justify-content: center;
+  display: flex;
+  margin-top: 10;
+
+}
+
+div.tab button {
+  width: 150;
+  height: 45;
+  display: flex;
+  align-items: center;
+  float: left;
+  margin-left: 15;
+}
+
 div.button {
   width : 100%;
   height: 100px;
@@ -50,6 +67,12 @@ td input {
   font-size: 25;
 }
 
+td select {
+  width: 100%;
+  height: 30;
+  font-size: 25;
+}
+
 
 div.bottom table {
   width: 100% 
@@ -67,6 +90,27 @@ div.bottom td.right {
 }
 
 div.bottom img {
-  width: 100%;
-  height: 100%;
+  width: 70%;
+  height: 70%;
+}
+
+
+td div.file {
+  height: 30px;
+  background: #fff;
+  border: 1px solid rgb(77,77,77);
+  border-radius: 10px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  &:hover {
+    background: rgb(77,77,77);
+    color: #fff;
+  }
+}
+
+td #file {
+  display: none;
 }
