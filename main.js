@@ -248,7 +248,7 @@ try {
         fs2.copySync(origin_nextstrain, nextstrain_path)
         
       } else {
-        if (fs.existsSync(nextstrain_path)) {
+        if (!fs.existsSync(nextstrain_path)) {
           fs2.copySync(origin_nextstrain, nextstrain_path)
         }
       }
