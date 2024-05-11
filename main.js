@@ -4,10 +4,7 @@ const path = require('path');
 const log = require('electron-log')
 const appPath = app.isPackaged ? process.execPath.replace('/'+app.getName(),'') : app.getAppPath();
 const fs = require('fs');
-const unzipper = require('unzipper');
-
-//log.info(process.execPath)
-//log.info(app.getAppPath())
+const fs2 = require('fs-extra');
 app.commandLine.appendSwitch("disable-software-rasterizer");
 app.commandLine.appendSwitch('disable-gpu');
 
@@ -85,10 +82,10 @@ try {
   const ref1_M = '/HTNV_76-118/HTNV_76-118_M.fasta'
   const ref1_S = '/HTNV_76-118/HTNV_76-118_S.fasta'
   
-  const ref2 = ref_path + '/SEOV'
-  const ref2_L = '/SEOV/SEOV_80-39_L.fasta'
-  const ref2_M = '/SEOV/SEOV_80-39_M.fasta'
-  const ref2_S = '/SEOV/SEOV_80-39_S.fasta'
+  const ref2 = ref_path + '/HTNV_Ac20-5'
+  const ref2_L = '/HTNV_Ac20-5/HTNV_Ac20-5_L.fasta'
+  const ref2_M = '/HTNV_Ac20-5/HTNV_Ac20-5_M.fasta'
+  const ref2_S = '/HTNV_Ac20-5/HTNV_Ac20-5_S.fasta'
 
   if (!fs.existsSync(ref_path)) fs.mkdirSync(ref_path);
   if (!fs.existsSync(ref1)) fs.mkdirSync(ref1);
@@ -107,30 +104,6 @@ try {
   if (!fs.existsSync(data_path+'/nextflow.config')) fs.copyFileSync(appPath+'/nextflow.config', data_path+'/nextflow.config', mode=fs.constants.COPYFILE_EXCL);
   if (!fs.existsSync(data_path+'/consensus.nf')) fs.copyFileSync(appPath+'/consensus.nf', data_path+'/consensus.nf', mode=fs.constants.COPYFILE_EXCL);
   if (!fs.existsSync(data_path+'/nextstrain.nf')) fs.copyFileSync(appPath+'/nextstrain.nf', data_path+'/nextstrain.nf', mode=fs.constants.COPYFILE_EXCL);
-  
-  function unzip(zipFilePath, extractDir){
-    fs.createReadStream(zipFilePath)
-    .pipe(unzipper.Parse())
-    .on('entry', entry => {
-        const fileName = entry.path;
-        const type = entry.type; // 'Directory' or 'File'
-        const destination = `${extractDir}/${fileName}`;
-  
-        // 파일 덮어쓰기
-        if (type === 'File') {
-            entry.pipe(fs.createWriteStream(destination, { overwrite: true }));
-        } else if (type === 'Directory') {
-            fs.mkdirSync(destination, { recursive: true });
-        }
-    })
-    .promise()
-    .then(() => {
-        console.log('ZIP 파일 추출 완료');
-    })
-    .catch(err => {
-        console.error('ZIP 파일 추출 중 오류 발생:', err);
-    });
-  }
 
   function removeDirectory(directoryPath) {
     // Check if directory exists
@@ -151,13 +124,11 @@ try {
   }
 
 
-  const zipFilePath = appPath + '/nextstrain.zip'
+  const origin_nextstrain = appPath + '/nextstrain'
   const nextstrain_path = data_path + '/nextstrain'
   const nextstrain_L_path = data_path + '/nextstrain/htv_L'
   const nextstrain_M_path = data_path + '/nextstrain/htv_M'
   const nextstrain_S_path = data_path + '/nextstrain/htv_S'
-
-  if (!fs.existsSync(nextstrain_path)) unzip(zipFilePath, data_path);
 
   app.whenReady().then(() => {
     const win = new BrowserWindow({
@@ -274,16 +245,21 @@ try {
 
       if ( reset === "Yes" ) {
         removeDirectory(nextstrain_path)
-        unzip(zipFilePath, data_path)
+        fs2.copySync(origin_nextstrain, nextstrain_path)
+        
       } else {
-        folderPath_result = workdir+"/results"
-        folderPath_auspice = workdir+"/auspice"
-        if (fs.existsSync(folderPath_result)) {
-            fs.rmSync(folderPath_result, { recursive: true });
+        if (fs.existsSync(nextstrain_path)) {
+          fs2.copySync(origin_nextstrain, nextstrain_path)
         }
-        if (fs.existsSync(folderPath_auspice)) {
-            fs.rmSync(folderPath_auspice, { recursive: true });
-          }
+      }
+
+      folderPath_result = workdir+"/results"
+      folderPath_auspice = workdir+"/auspice"
+      if (fs.existsSync(folderPath_result)) {
+          fs.rmSync(folderPath_result, { recursive: true });
+      }
+      if (fs.existsSync(folderPath_auspice)) {
+          fs.rmSync(folderPath_auspice, { recursive: true });
       }
 
       let consensus_data = read_consensus(file_path)
@@ -312,7 +288,7 @@ try {
       run_obj = [
         {
           'app': 'micromamba',
-          'args': ['run','-n',config['app']['env_name'], 'nextflow', data_path+'/nextstrain.nf','--basepath', workdir],
+          'args': ['run','-n',config['app']['env_name'], 'nextflow', data_path+'/nextstrain.nf','--basepath', data_path, '--workdir', workdir, '--copypath', origin_nextstrain, '--reset', reset],
           'workdir': data_path
         },
         {
