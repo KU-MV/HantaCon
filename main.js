@@ -201,9 +201,18 @@ try {
 
     ipcMain.on('baseOpen', () => {
       log.info('baseOpen')
-      shell.openPath(data_path)
+      shell.openPath(data_path+'/result')
     })
     
+    ipcMain.on('baseOpen2', () => {
+      log.info('baseOpen2')
+      if (fs.existsSync(data_path+'/nextstrain')) {
+        shell.openPath(data_path+'/nextstrain')
+      } else {
+        shell.openPath(data_path)
+      }
+    })
+
     ipcMain.on('runShell2', (event, obj) => {
       log.info(obj)
       strain_type = obj['strain_type']
