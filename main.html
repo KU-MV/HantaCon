@@ -90,9 +90,7 @@
         <table>
           <tr>
             <th>Type</th>
-              
             <td>
-              
               <select id="type">
                 <option value="L">L</option>
                 <option value="M">M</option>
@@ -101,7 +99,7 @@
             </td>
           </tr>
           <tr>
-            <th>File</th>
+            <th>*File<br><label style="font-size: 12;">(required)</label></th>
             <td><label for="file">
               <div class="file">Select</div>
             </label>
@@ -203,10 +201,6 @@
     //document.querySelector('button.run').addEventListener('click', () => {
     //  file_find.runShell(chkItems());
     //});
-    
-    document.querySelector('button.run-auspice').addEventListener('click', () => {
-      file_find.auspice();
-    });
 
     document.querySelector('button.run').addEventListener('click', () => {
       file_find.runShell(chkItems());
