@@ -12,6 +12,10 @@ contextBridge.exposeInMainWorld('file_find', {
     ipcRenderer.send('runShell', {value: items});
   },
 
+  runShell2(obj) {
+    ipcRenderer.send('runShell2', {value: obj});
+  },
+
   auspice() {
     ipcRenderer.send('auspice');
   },

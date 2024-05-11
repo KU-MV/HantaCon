@@ -89,6 +89,18 @@
       <div class="sub-option" style="width : 100%; height: 400px; margin-top: 5; justify-content: center; display: flex;">
         <table>
           <tr>
+            <th>Type</th>
+              
+            <td>
+              
+              <select id="type">
+                <option value="L">L</option>
+                <option value="M">M</option>
+                <option value="M">S</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
             <th>File</th>
             <td><label for="file">
               <div class="file">Select</div>
@@ -99,10 +111,11 @@
               <select id="reset">
                 <option value="No">No</option>
                 <option value="Yes">Yes</option>
+              </select>
               </td>
           </tr>
           <tr>
-            <th>Strain</th>
+            <th>*Strain<br><label style="font-size: 12;">(required)</label></th>
             <td><input type="text" id="strain"></td>
             <th>Collection date</th>
             <td><input type="text" id="date"></td>
@@ -196,11 +209,47 @@
     });
 
     document.querySelector('button.run').addEventListener('click', () => {
-      file_find.runShell(chkItems(false));
+      file_find.runShell(chkItems());
     });
 
     document.querySelector('button.run-nextstrain').addEventListener('click', () => {
-      file_find.runShell(chkItems(true));
+      //let virus = document.querySelector('div.sub-option input#virus').value
+      //let accession = document.querySelector('div.sub-option input#accession').value
+      let strain_type = document.querySelector('div.sub-option select#type').value
+      let file_path = filepath = $('input[type=file]').val()
+      let reset = document.querySelector('div.sub-option select#reset').value
+      let strain = document.querySelector('div.sub-option input#strain').value
+      let date = document.querySelector('div.sub-option input#date').value
+      let province = document.querySelector('div.sub-option input#province').value
+      
+      //let host = document.querySelector('div.sub-option input#host').value
+      //let region = document.querySelector('div.sub-option input#region').value
+      let country = document.querySelector('div.sub-option input#country').value
+      
+      let city = document.querySelector('div.sub-option input#city').value
+      let town = document.querySelector('div.sub-option input#town').value
+
+      //let db = document.querySelector('div.sub-option input#db').value
+      
+      //let author = document.querySelector('div.sub-option input#author').value
+      //let url = document.querySelector('div.sub-option input#url').value
+      //let title = document.querySelector('div.sub-option input#title').value
+      
+      //let journal = document.querySelector('div.sub-option input#journal').value
+      //let paper_url = document.querySelector('div.sub-option input#paper_url').value
+
+      obj = {
+        "strain_type":strain_type,
+        "file_path":file_path,
+        "reset": reset,
+        "strain": strain,
+        "date": date,
+        "country": country,
+        "province": province,
+        "city": city,
+        "town": town,
+      }
+      file_find.runShell2(obj);
     });
 
     document.querySelector('button.folder').addEventListener('click', () => {
@@ -317,32 +366,12 @@
 
     }
 
-    function chkItems(nextstrain) {
+    function chkItems() {
       let checkbox_list = $('div.listview input')
       let basePath = document.querySelector('div.config input#basePath').value
       let dataPath = document.querySelector('div.config input#dataPath').value
       let threshold = document.querySelector('input#threshold').value
-      
-      //let virus = document.querySelector('div.sub-option input#virus').value
-      //let accession = document.querySelector('div.sub-option input#accession').value
-      let date = document.querySelector('div.sub-option input#date').value
-      let province = document.querySelector('div.sub-option input#province').value
-      
-      //let host = document.querySelector('div.sub-option input#host').value
-      //let region = document.querySelector('div.sub-option input#region').value
-      let country = document.querySelector('div.sub-option input#country').value
-      
-      let city = document.querySelector('div.sub-option input#city').value
-      let town = document.querySelector('div.sub-option input#town').value
-      //let db = document.querySelector('div.sub-option input#db').value
-      
-      //let author = document.querySelector('div.sub-option input#author').value
-      //let url = document.querySelector('div.sub-option input#url').value
-      //let title = document.querySelector('div.sub-option input#title').value
-      
-      //let journal = document.querySelector('div.sub-option input#journal').value
-      //let paper_url = document.querySelector('div.sub-option input#paper_url').value
-
+  
       result = []
       for (let item of checkbox_list) {
         if (item.checked == true) {
@@ -363,14 +392,6 @@
               'M': option_M,
               'S': option_S
             },
-            "nextstrain": nextstrain,
-            "nextstrain_option": {
-              "date": date,
-              "province": province,
-              "country": country,
-              "city": city,
-              "town": town,
-            },
             "basePath": basePath,
             "dataPath": dataPath
           }
@@ -379,9 +400,6 @@
         }
       }
       console.log(result)
-      if (nextstrain==true){
-        showPage(1)
-      }
       return result
     }
 

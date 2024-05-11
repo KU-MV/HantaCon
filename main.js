@@ -157,7 +157,12 @@ try {
   const nextstrain_L_auspice = nextstrain_L_path + '/auspice/htv_L.json'
   const nextstrain_M_auspice = nextstrain_M_path + '/auspice/htv_M.json'
   const nextstrain_S_auspice = nextstrain_S_path + '/auspice/htv_S.json'
-
+  const metadata_L = nextstrain_L_path + "/data/metadata.tsv"
+  const metadata_M = nextstrain_M_path + "/data/metadata.tsv"
+  const metadata_S = nextstrain_S_path + "/data/metadata.tsv"
+  const sequence_L = nextstrain_L_path + "/data/sequence.fasta"
+  const sequence_M = nextstrain_M_path + "/data/sequence.fasta"
+  const sequence_S = nextstrain_S_path + "/data/sequence.fasta"
 
   app.whenReady().then(() => {
     const win = new BrowserWindow({
@@ -220,34 +225,63 @@ try {
       log.info('baseOpen')
       shell.openPath(data_path)
     })
-  
-    ipcMain.on('auspice', () => {
-      log.info('auspice')
-      win.webContents.executeJavaScript('elementDisabled(true)')
-      unzip(zipFilePath, data_path)
-      workdirs = [nextstrain_L_path, nextstrain_M_path, nextstrain_S_path]
-      nextstrain_works = []
-      for (workdir_index in workdirs) {
-        run_obj = {
-          'app': 'nextstrain',
-          'args': ['shell','.','-c','snakemake -c1'],
-          'workdir': workdirs[workdir_index]
-        }
-        nextstrain_works.push(run_obj)
-        log.info('run_obj: ',run_obj)
-        folderPath_result = workdirs[workdir_index]+"/results"
-        folderPath_auspice = workdirs[workdir_index]+"/auspice"
-        log.info("folderPath_result: ",folderPath_result)
-        log.info("folderPath_auspice: ",folderPath_auspice)
-        if (fs.existsSync(folderPath_result)) {
+    
+    ipcMain.on('runShell2', (event, obj) => {
+      log.info(obj)
+      strain_type = obj['strain_type']
+      file_path = obj['file_path']
+      reset = obj['reset']
+      strain = obj['strain']
+      date = obj['date']
+      country = obj['country']
+      province = obj['province']
+      city = obj['city']
+      town = obj['town']
+
+      if ( reset == "Yes" ) {
+        removeDirectory(nextstrain_path)
+        unzip(zipFilePath, data_path)
+      }
+      
+      let consensus_data = read_consensus(file_path)
+      let input_text = ">" + result_name + "\n" + consensus_data + "\n"
+      log.info(input_text)
+      log.info(metadata)
+
+      if ( strain_type = "L" ) {
+        sequence_path = sequence_L
+        metadata_path = metadata_L
+        workdir = nextstrain_L_path
+      } else if ( strain_type = "M" ) {
+        sequence_path = sequence_M
+        metadata_path = metadata_M
+        workdir = nextstrain_M_path
+
+      } else if ( strain_type = "S" ) {
+        sequence_path = sequence_S
+        metadata_path = metadata_S
+        workdir = nextstrain_S_path
+      }
+
+      file_write(file_path=sequence_path, content=input_text)
+      file_write(file_path=metadata_path, content=metadata)
+
+      run_obj = {
+        'app': 'nextstrain',
+        'args': ['shell','.','-c','snakemake -c1'],
+        'workdir': workdir
+      }
+
+      folderPath_result = workdir+"/results"
+      folderPath_auspice = workdir+"/auspice"
+      if (fs.existsSync(folderPath_result)) {
           fs.rmSync(folderPath_result, { recursive: true });
-        }
-        if (fs.existsSync(folderPath_auspice)) {
+      }
+      if (fs.existsSync(folderPath_auspice)) {
           fs.rmSync(folderPath_auspice, { recursive: true });
         }
-      }
-  
-  
+
+      nextstrain_works = [run_obj]
       myWorker2.postMessage(nextstrain_works)
       myWorker2.on('message', (nextstrain_result) => {
         //nextstrain shell . -c "snakemake -c1"
@@ -266,12 +300,10 @@ try {
           if (fs.existsSync(nextstrain_S_auspice)) fs.copyFile(nextstrain_S_auspice, formattedDate+'/htv_S.json',(error) => error && log.info(error));
         }
       })
-      log.info('end')
-    })
-  
+    }
+    )
+
     ipcMain.on('runShell', (event, items) => {
-      removeDirectory(nextstrain_path)
-      let nextstrain_chk = false
       log.info('아이템: ',items)
       if ( items.value.length > 0 ){
         for ( let item in items.value ) {
@@ -283,139 +315,40 @@ try {
         win.webContents.executeJavaScript('elementDisabled(true)')
         //win.webContents.executeJavaScript('document.querySelector("div.loading-container").style.display = "block"')  
         myWorker.on('message', (obj) => {
-          let result_name = obj['name']
-          let result = obj['result']
-          let item = obj['item']
-          let app = obj['app']
-          let args = obj['args']
-          let bams = obj['bams']
-          let bams_L = bams['L']
-          let bams_M = bams['M']
-          let bams_S = bams['S']
-          let consensus = obj['consensus']
-          let consensus_L = consensus['L']
-          let consensus_M = consensus['M']
-          let consensus_S = consensus['S']
-          let nextstrain_run = obj['nextstrain']
-          let metadata = obj['metadata']['data']
-          let metadata_L = obj['metadata']['L']
-          let metadata_M = obj['metadata']['M']
-          let metadata_S = obj['metadata']['S']
-          let sequence_L = obj['sequence']['L']
-          let sequence_M = obj['sequence']['M']
-          let sequence_S = obj['sequence']['S']
-          
-  
-          //log.info('test: ' ,item)
-          //log.info('q_list:',q_list)
-          //log.info('q_list.length:',q_list.length)
-          log.info('app: ', app)
-          log.info('args: ', args)
-          cmd = app
-          for ( let arg in args ) {
-            cmd += " " + args[arg]
-          }
-          log.info('cmd: ', cmd)
-          //win.webContents.executeJavaScript('alert("'+cmd+'")')1
-          log.info('stdin: ', result.stdin)
-          //win.webContents.executeJavaScript('alert("'+result.stdin+'")')
-          log.info('stdout: ', result.stdout)
-          //win.webContents.executeJavaScript('alert("'+result.stdout+'")')
-          log.info('stderr: ', result.stderr)
-          //win.webContents.executeJavaScript('alert("'+result.stderr+'")')
-          nextstrain_chk = nextstrain_run
-          if (nextstrain_run==true){
-            if (fs.existsSync(consensus_L)) {
-              let consensus_data = read_consensus(consensus_L)
-              let input_text = ">" + result_name + "\n" + consensus_data + "\n"
-              log.info(input_text)
-              log.info(metadata)
-              file_write(file_path=sequence_L, content=input_text)
-              file_write(file_path=metadata_L, content=metadata)
+            let result = obj['result']
+            let item = obj['item']
+            let app = obj['app']
+            let args = obj['args']
+            let bams = obj['bams']
+            let bams_L = bams['L']
+            let bams_M = bams['M']
+            let bams_S = bams['S']          
+            log.info('app: ', app)
+            log.info('args: ', args)
+            cmd = app
+            for ( let arg in args ) {
+              cmd += " " + args[arg]
             }
-    
-            if (fs.existsSync(consensus_M)) {
-              let consensus_data = read_consensus(consensus_M)
-              let input_text = ">" + result_name + "\n" + consensus_data + "\n"
-              log.info(input_text)
-              log.info(metadata)
-              file_write(file_path=sequence_M, content=input_text)
-              file_write(file_path=metadata_M, content=metadata)
-            }
-    
-            if (fs.existsSync(consensus_S)) {
-              let consensus_data = read_consensus(consensus_S)
-              let input_text = ">" + result_name + "\n" + consensus_data + "\n"
-              log.info(input_text)
-              log.info(metadata)
-              file_write(file_path=sequence_S, content=input_text)
-              file_write(file_path=metadata_S, content=metadata)
-            }
-          }
-  
-        
-          itemId = item["itemId"]
-          value = item["value"]
-          if ((fs.existsSync(bams_L)) && (fs.existsSync(bams_M)) && (fs.existsSync(bams_S))){
-            win.webContents.executeJavaScript('setStatus("'+itemId+'","[ 완료 ] ")')
-            
-          } else {
-            win.webContents.executeJavaScript('setStatus("'+itemId+'","[ 실패 ] ")')
-          }
-  
-          q_list.pop(item)
-          win.webContents.executeJavaScript('progress_add()')
-          if ( q_list.length == 0 ){
-            
-            if ( nextstrain_chk == true ) {
-              workdirs = [nextstrain_L_path, nextstrain_M_path, nextstrain_S_path]
-              nextstrain_works = []
-              for (workdir_index in workdirs) {
-                run_obj = {
-                  'app': 'nextstrain',
-                  'args': ['shell','.','-c','snakemake -c1'],
-                  'workdir': workdirs[workdir_index]
-                }
-                nextstrain_works.push(run_obj)
-                log.info('run_obj: ',run_obj)
-                folderPath_result = workdirs[workdir_index]+"/results"
-                folderPath_auspice = workdirs[workdir_index]+"/auspice"
-                log.info("folderPath_result: ",folderPath_result)
-                log.info("folderPath_auspice: ",folderPath_auspice)
-                if (fs.existsSync(folderPath_result)) {
-                  fs.rmSync(folderPath_result, { recursive: true });
-                }
-                if (fs.existsSync(folderPath_auspice)) {
-                  fs.rmSync(folderPath_auspice, { recursive: true });
-                }
-              }
-          
-  
-              myWorker2.postMessage(nextstrain_works)
-              myWorker2.on('message', (nextstrain_result) => {
-                //nextstrain shell . -c "snakemake -c1"
-                log.info('stdin: ', nextstrain_result['result'].stdin)
-                log.info('stdout: ', nextstrain_result['result'].stdout)
-                log.info('stderr: ', nextstrain_result['result'].stderr)
-                nextstrain_works.pop(nextstrain_result['item'])
-                if ( nextstrain_works.length == 0 ){
-                  win.webContents.executeJavaScript('elementDisabled(false)')
-                  win.webContents.executeJavaScript('alert("Complete")')
-                  let currentDate = new Date();
-                  let formattedDate = auspice_result_path + '/' + currentDate.toISOString().replace(/T/,'_').replace(/\..+/, '').replace('-','_').replace('-','_').replace(':','_').replace(':','_');
-                  fs.mkdirSync(formattedDate)
-                  if (fs.existsSync(nextstrain_L_auspice)) fs.copyFile(nextstrain_L_auspice, formattedDate+'/htv_L.json',(error) => error && log.info(error));
-                  if (fs.existsSync(nextstrain_M_auspice)) fs.copyFile(nextstrain_M_auspice, formattedDate+'/htv_M.json',(error) => error && log.info(error));
-                  if (fs.existsSync(nextstrain_S_auspice)) fs.copyFile(nextstrain_S_auspice, formattedDate+'/htv_S.json',(error) => error && log.info(error));
-                }
-              })
-              log.info('end')
+            log.info('cmd: ', cmd)
+            log.info('stdin: ', result.stdin)
+            log.info('stdout: ', result.stdout)
+            log.info('stderr: ', result.stderr)
+            itemId = item["itemId"]
+            value = item["value"]
+            if ((fs.existsSync(bams_L)) && (fs.existsSync(bams_M)) && (fs.existsSync(bams_S))){
+              win.webContents.executeJavaScript('setStatus("'+itemId+'","[ 완료 ] ")')
+              
             } else {
+              win.webContents.executeJavaScript('setStatus("'+itemId+'","[ 실패 ] ")')
+            }
+            q_list.pop(item)
+            win.webContents.executeJavaScript('progress_add()')
+            if ( q_list.length == 0 ){
               win.webContents.executeJavaScript('elementDisabled(false)')
               win.webContents.executeJavaScript('alert("Complete")')
-            }
+             }
           }
-        });
+        );
         post_obj = {
           "items": items,
           "config": config
