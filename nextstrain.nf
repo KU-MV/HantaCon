@@ -13,7 +13,7 @@ process test {
         path copypath
         val reset
     output:
-    
+        path $workdir/data/sequence.fasta
     script:
     """
     rm -f $workdir/data/sequence_origin.fasta

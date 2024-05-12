@@ -10,6 +10,7 @@ parentPort.on('message', (obj) => {
     'workdir': obj['workdir'],
     'result': []
   }
+  items = obj['run']
   for ( index in items ){
     run_obj = items[index]
     log.info(run_obj)

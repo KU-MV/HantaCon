@@ -343,7 +343,7 @@ try {
       if (fs.existsSync(result_file)) {
         let currentDate = new Date();
         let formattedDate = currentDate.toISOString().replace(/T/,'_').replace(/\..+/, '').replace('-','_').replace('-','_').replace(':','_').replace(':','_');
-        fs.copyFileSync(result_file, auspice_result_path+'/'+formattedDate+'_'+strain+'.json')
+        fs.copyFileSync(result_file, auspice_result_path+'/'+formattedDate+'_'+strain_type+'_'+strain+'.json')
         win.webContents.executeJavaScript('alert("Complete")')
       } else {
         win.webContents.executeJavaScript('alert("Fail")')
