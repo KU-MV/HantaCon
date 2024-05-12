@@ -75,7 +75,7 @@ try {
 
   const ref_path = config['path']['ref'].replace("{basePath}",data_path)//base_path + '/ref'
   const result_path = config['path']['result'].replace("{basePath}",data_path)//data_path + '/result'
-  //const auspice_result_path = config['path']['auspice_result'].replace("{basePath}",data_path)//data_path + '/auspice_result'
+  const auspice_result_path = config['path']['auspice_result'].replace("{basePath}",data_path)//data_path + '/auspice_result'
 
   const ref1 = ref_path + '/HTNV_76-118'
   const ref1_L = '/HTNV_76-118/HTNV_76-118_L.fasta'
@@ -99,7 +99,7 @@ try {
   if (!fs.existsSync(ref_path+ref2_S)) fs.copyFileSync(appPath+'/ref'+ref2_S, ref_path+ref2_S, mode=fs.constants.COPYFILE_EXCL);
 
   if (!fs.existsSync(result_path)) fs.mkdirSync(result_path);
-  //if (!fs.existsSync(auspice_result_path)) fs.mkdirSync(auspice_result_path);
+  if (!fs.existsSync(auspice_result_path)) fs.mkdirSync(auspice_result_path);
   if (!fs.existsSync(data_path+'/main.nf')) fs.copyFileSync(appPath+'/main.nf', data_path+'/main.nf', mode=fs.constants.COPYFILE_EXCL);
   if (!fs.existsSync(data_path+'/nextflow.config')) fs.copyFileSync(appPath+'/nextflow.config', data_path+'/nextflow.config', mode=fs.constants.COPYFILE_EXCL);
   if (!fs.existsSync(data_path+'/consensus.nf')) fs.copyFileSync(appPath+'/consensus.nf', data_path+'/consensus.nf', mode=fs.constants.COPYFILE_EXCL);
@@ -214,6 +214,15 @@ try {
       }
     })
 
+    ipcMain.on('baseOpen3', () => {
+      log.info('baseOpen3')
+      if (fs.existsSync(auspice_result_path)) {
+        shell.openPath(auspice_result_path)
+      } else {
+        shell.openPath(data_path)
+      }
+    })
+
     ipcMain.on('runShell2', (event, obj) => {
       log.info(obj)
       strain_type = obj['strain_type']
@@ -236,21 +245,22 @@ try {
       title = ''
       journal = ''
       paper_url = ''
-    
-      
+
       if ( strain_type === "L" ) {
         sequence_path = nextstrain_L_path + "/data/sequence.fasta"
         metadata_path = nextstrain_L_path + "/data/metadata.tsv"
         workdir = nextstrain_L_path
+        result_file = nextstrain_L_path + '/auspice/htv_'+strain_type+'.json'
       } else if ( strain_type === "M" ) {
         sequence_path = nextstrain_M_path + "/data/sequence.fasta"
         metadata_path = nextstrain_M_path + "/data/metadata.tsv"
         workdir = nextstrain_M_path
-
+        result_file = nextstrain_M_path + '/auspice/htv_'+strain_type+'.json'
       } else if ( strain_type === "S" ) {
         sequence_path = nextstrain_S_path + "/data/sequence.fasta"
         metadata_path = nextstrain_S_path + "/data/metadata.tsv"
         workdir = nextstrain_S_path
+        result_file = nextstrain_S_path + '/auspice/htv_'+strain_type+'.json'
       }
 
       if ( reset === "Yes" ) {
@@ -299,35 +309,48 @@ try {
       file_write(file_path=sequence_path, content=input_text)
       file_write(file_path=metadata_path, content=metadata_text)
 
-      run_obj = [
-        {
-          'type': strain_type,
-          'obj': obj,
-          'app': 'micromamba',
-          'args': ['run','-n',config['app']['env_name'], 'nextflow', data_path+'/nextstrain.nf','--basepath', data_path, '--workdir', workdir, '--copypath', origin_nextstrain, '--reset', reset],
-          'workdir': data_path
-        },
-        {
-         'app': 'nextstrain',
-         'args': ['shell','.','-c','snakemake -c1'],
-         'workdir': workdir
-        }
-      ]
+      run_obj = {
+        'strain_type': strain_type,
+        'result_file': result_file,
+        'workdir': workdir,
+        'run': [
+          {
+            'type': strain_type,
+            'obj': obj,
+            'app': 'micromamba',
+            'args': ['run','-n',config['app']['env_name'], 'nextflow', data_path+'/nextstrain.nf','--basepath', data_path, '--workdir', workdir, '--copypath', origin_nextstrain, '--reset', reset],
+            'workdir': data_path
+          },
+          {
+           'app': 'nextstrain',
+           'args': ['shell','.','-c','snakemake -c1'],
+           'workdir': workdir
+          }
+        ]
+
+      }
 
       win.webContents.executeJavaScript('elementDisabled(true)')
       myWorker2.postMessage(run_obj)
-      myWorker2.on('message', (nextstrain_result) => {
-        //nextstrain shell . -c "snakemake -c1"
-        log.info(nextstrain_result)
-        //log.info('stdin: ', nextstrain_result[0]['result'].stdin)
-        //log.info('stdout: ', nextstrain_result[0]['result'].stdout)
-        //log.info('stderr: ', nextstrain_result[0]['result'].stderr)
-        //log.info('error: ', nextstrain_result[0]['result'].error)
-        win.webContents.executeJavaScript('elementDisabled(false)')
+    })
+    
+    myWorker2.on('message', (nextstrain_result) => {
+      //nextstrain shell . -c "snakemake -c1"
+      log.info(nextstrain_result)
+      strain_type = nextstrain_result['strain_type']
+      result_file = nextstrain_result['result_file']
+      workdir = nextstrain_result['workdir']
+      if (fs.existsSync(result_file)) {
+        let currentDate = new Date();
+        let formattedDate = currentDate.toISOString().replace(/T/,'_').replace(/\..+/, '').replace('-','_').replace('-','_').replace(':','_').replace(':','_');
+        fs.copyFileSync(result_file, auspice_result_path+'/'+formattedDate+'_'+strain+'.json')
         win.webContents.executeJavaScript('alert("Complete")')
-      })
-    }
-    )
+      } else {
+        win.webContents.executeJavaScript('alert("Fail")')
+      }
+      win.webContents.executeJavaScript('elementDisabled(false)')
+      
+    })
 
     ipcMain.on('runShell', (event, items) => {
       log.info('아이템: ',items)
