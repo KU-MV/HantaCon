@@ -107,6 +107,7 @@ try {
 
   function removeDirectory(directoryPath) {
     // Check if directory exists
+    log.info('delete: ', directoryPath);
     if (fs.existsSync(directoryPath)) {
         // Remove directory
         fs.rmdirSync(directoryPath, { recursive: true }, (err) => {
@@ -237,27 +238,31 @@ try {
       paper_url = ''
     
       
-      if ( strain_type = "L" ) {
+      if ( strain_type === "L" ) {
         sequence_path = nextstrain_L_path + "/data/sequence.fasta"
         metadata_path = nextstrain_L_path + "/data/metadata.tsv"
         workdir = nextstrain_L_path
-      } else if ( strain_type = "M" ) {
+      } else if ( strain_type === "M" ) {
         sequence_path = nextstrain_M_path + "/data/sequence.fasta"
         metadata_path = nextstrain_M_path + "/data/metadata.tsv"
         workdir = nextstrain_M_path
 
-      } else if ( strain_type = "S" ) {
+      } else if ( strain_type === "S" ) {
         sequence_path = nextstrain_S_path + "/data/sequence.fasta"
         metadata_path = nextstrain_S_path + "/data/metadata.tsv"
         workdir = nextstrain_S_path
       }
 
       if ( reset === "Yes" ) {
+        log.info('reset !!!')
+        log.info(nextstrain_path)
         removeDirectory(nextstrain_path)
         fs2.copySync(origin_nextstrain, nextstrain_path)
         
       } else {
+        log.info('no reset')
         if (!fs.existsSync(nextstrain_path)) {
+          log.info('none nextstrain')
           fs2.copySync(origin_nextstrain, nextstrain_path)
         }
       }
@@ -296,6 +301,8 @@ try {
 
       run_obj = [
         {
+          'type': strain_type,
+          'obj': obj,
           'app': 'micromamba',
           'args': ['run','-n',config['app']['env_name'], 'nextflow', data_path+'/nextstrain.nf','--basepath', data_path, '--workdir', workdir, '--copypath', origin_nextstrain, '--reset', reset],
           'workdir': data_path
