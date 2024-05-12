@@ -26,5 +26,10 @@ contextBridge.exposeInMainWorld('file_find', {
 
   openBase() {
     ipcRenderer.send('baseOpen');
+  },
+
+  openBase2() {
+    ipcRenderer.send('baseOpen2');
   }
+
 });
