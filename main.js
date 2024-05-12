@@ -2,7 +2,12 @@ const {app, BrowserWindow, dialog, ipcMain, shell} = require('electron');
 const { Worker } = require('worker_threads');
 const path = require('path');
 const log = require('electron-log')
-const appPath = app.isPackaged.replace('hantacon', 'HantaCon') ? process.execPath.replace('/'+app.getName(),'') : app.getAppPath();
+log.info(app.isPackaged)
+log.info(process.execPath)
+log.info(app.getName())
+log.info(app.getAppPath())
+
+const appPath = app.isPackaged ? process.execPath.replace('/hantacon','') : app.getAppPath();
 const fs = require('fs');
 const fs2 = require('fs-extra');
 app.commandLine.appendSwitch("disable-software-rasterizer");
@@ -381,10 +386,10 @@ try {
             itemId = item["itemId"]
             value = item["value"]
             if ((fs.existsSync(bams_L)) && (fs.existsSync(bams_M)) && (fs.existsSync(bams_S))){
-              win.webContents.executeJavaScript('setStatus("'+itemId+'","[ 완료 ] ")')
+              win.webContents.executeJavaScript('setStatus("'+itemId+'","[ Complete ] ")')
               
             } else {
-              win.webContents.executeJavaScript('setStatus("'+itemId+'","[ 실패 ] ")')
+              win.webContents.executeJavaScript('setStatus("'+itemId+'","[ Fail ] ")')
             }
             q_list.pop(item)
             win.webContents.executeJavaScript('progress_add()')
