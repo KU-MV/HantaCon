@@ -17,7 +17,6 @@ process consensus_process {
         path seg
     output:
         path "${bam.simpleName}.consensus.fasta"
-        path "${bam.simpleName}2.consensus.fasta"
     """
     samtools index $bam
     medaka consensus --model r941_prom_variant_g360 --threads 8 --batch_size 100 $bam ${bam.simpleName}.hdf
