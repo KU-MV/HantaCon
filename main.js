@@ -315,10 +315,8 @@ try {
         'workdir': workdir,
         'run': [
           {
-            'type': strain_type,
-            'obj': obj,
             'app': 'micromamba',
-            'args': ['run','-n',config['app']['env_name'], 'nextflow', data_path+'/nextstrain.nf','--basepath', data_path, '--workdir', workdir, '--copypath', origin_nextstrain, '--reset', reset],
+            'args': ['run','-n',config['app']['env_name'], 'nextflow', data_path+'/nextstrain.nf','--workdir', workdir, '--outfile', sequence_path],
             'workdir': data_path
           },
           {

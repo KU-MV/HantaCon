@@ -21,11 +21,17 @@ parentPort.on('message', (obj) => {
 
 
     result = spawnSync(app, args, {encoding: 'utf-8', cwd: workdir})
+    log.info(result)
     let result_obj = {
       'result': result,
       'item': run_obj
     }
     results['result'].push(result_obj)
+
+    if (result.error) {
+      log.info(result.error)
+      break;
+    }
   }
   parentPort.postMessage(results);
 });

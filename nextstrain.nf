@@ -2,22 +2,20 @@ nextflow.enable.dsl=2
 
 workflow {
     main:
-        test(params.basepath, params.workdir, params.copypath, params.reset)
+        test(params.workdir, params.outfile)
 }
 
 process test {
     debug true
     input:
-        path basepath
         path workdir
-        path copypath
-        val reset
+        path outfile
     output:
-        path $workdir/data/sequence.fasta
+        path outfile
     script:
     """
     rm -f $workdir/data/sequence_origin.fasta
     mv $workdir/data/sequence.fasta $workdir/data/sequence_origin.fasta
-    mafft $workdir/data/sequence_origin.fasta > $workdir/data/sequence.fasta
+    mafft $workdir/data/sequence_origin.fasta > $outfile
     """
 }

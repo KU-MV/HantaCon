@@ -102,7 +102,7 @@
           </tr>
           <tr>
             <th>*File<br><label style="font-size: 12;">(required)</label></th>
-            <td><label for="file">
+            <td><label class="disabled-event" for="file">
               <div class="file disabled-event" value="">Select</div>
             </label>
             <th>Data reset</th>
@@ -127,7 +127,7 @@
           </tr>
           <tr>
             <th>City</th>
-            <td><input type="text" id="city"></td>
+            <td><input class="disabled-event" type="text" id="city"></td>
             <th>Town</th>
             <td><input class="disabled-event" type="text" id="town"></td>
           </tr>
@@ -143,6 +143,10 @@
           <img class="icon" src="./img/folder.png">
           <label>Result</label>
         </button>
+        <button class="reset">
+          <label>Reset</label>
+        </button>
+        
       </div>
       <iframe src="https://auspice.us", sandbox="allow-scripts allow-popups allow-storage-access-by-user-activation allow-same-origin"></iframe>
     </div>
@@ -249,11 +253,15 @@
     });
     
     document.querySelector('button.folder2').addEventListener('click', () => {
-      file_find.openBase2();
+      file_find.openBase3();
     });
 
     document.querySelector('button.folder3').addEventListener('click', () => {
       file_find.openBase3();
+    });
+
+    document.querySelector('button.reset').addEventListener('click', () => {
+      iframe_reset();
     });
 
     function progress_add(){
@@ -462,6 +470,10 @@
         div_option.style.display = 'none'
       }
     }
+    function iframe_reset(){
+      f = document.querySelector('iframe')
+      f.src = 'https://auspice.us'
+    }
 
     function showPage(step) {
       let page_list = $('div.step-page')
@@ -475,6 +487,10 @@
       let div_option = document.querySelector('div.step-'+step)
       console.log(div_option)
       div_option.style.display = 'block'
+      
+      if (step === 3) {
+        iframe_reset()
+      }
     }
 
   </script>
