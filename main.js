@@ -59,7 +59,7 @@ try {
   log.info(app.getPath('home'))
   log.info(appPath)
 
-  const data_path = app.getPath('home') + '/hantacon'
+  const data_path = app.getPath('home') + '/HantaCon'
   const config_path = data_path + '/config.json'
   if (!fs.existsSync(data_path)) fs.mkdirSync(data_path);
   if (!fs.existsSync(config_path)) fs.copyFileSync(appPath+'/config.json', config_path, mode=fs.constants.COPYFILE_EXCL);
