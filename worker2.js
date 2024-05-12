@@ -1,6 +1,6 @@
 const { parentPort } = require('worker_threads');
 const log = require('electron-log')
-const { spawnSync, execSync } = require("child_process");
+const { spawnSync } = require("child_process");
 
 parentPort.on('message', (obj) => {
   log.info('obj: ', obj)
