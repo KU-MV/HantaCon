@@ -2,13 +2,11 @@ const {app, BrowserWindow, dialog, ipcMain, shell} = require('electron');
 const { Worker } = require('worker_threads');
 const path = require('path');
 const log = require('electron-log')
-const appPath = app.isPackaged ? process.execPath.replace('/'+app.getName(),'') : app.getAppPath();
+const appPath = app.isPackaged.replace('hantacon', 'HantaCon') ? process.execPath.replace('/'+app.getName(),'') : app.getAppPath();
 const fs = require('fs');
 const fs2 = require('fs-extra');
 app.commandLine.appendSwitch("disable-software-rasterizer");
 app.commandLine.appendSwitch('disable-gpu');
-
-
 
 function file_read(file_path, read_type='text'){
   log.info(file_path)
