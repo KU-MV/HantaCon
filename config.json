@@ -1,8 +1,8 @@
 {
   "desc": "설명 {basePath}는 hantacon 기본 경로",
   "app": {
-    "conda": "micromamba",
-    "env_name": "KU-ONT-Hantavirus-consensus"
+    "conda": "conda",
+    "env_name": "HantaCon"
   },
   "path": {
     "ref": "{basePath}/ref",

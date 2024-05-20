@@ -70,8 +70,8 @@
   "author": "Grey Ha <greytrace64@gmail.com>",
   "license": "ISC",
   "devDependencies": {
-    "electron": "^25.9.8",
-    "electron-builder": "^24.13.3"
+    "electron": "^25.1.1",
+    "electron-builder": "^22.10.5"
   },
   "dependencies": {
     "election": "0.0.0",
