@@ -2,7 +2,8 @@
   "desc": "설명 {basePath}는 hantacon 기본 경로",
   "app": {
     "conda": "conda",
-    "env_name": "HantaCon"
+    "env_name": "HantaCon",
+    "nextstrain": "nextstrain"
   },
   "path": {
     "ref": "{basePath}/ref",
