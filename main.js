@@ -365,41 +365,6 @@ try {
         
         win.webContents.executeJavaScript('elementDisabled(true)')
         //win.webContents.executeJavaScript('document.querySelector("div.loading-container").style.display = "block"')  
-        myWorker.on('message', (obj) => {
-            let result = obj['result']
-            let item = obj['item']
-            let app = obj['app']
-            let args = obj['args']
-            let bams = obj['bams']
-            let bams_L = bams['L']
-            let bams_M = bams['M']
-            let bams_S = bams['S']          
-            log.info('app: ', app)
-            log.info('args: ', args)
-            cmd = app
-            for ( let arg in args ) {
-              cmd += " " + args[arg]
-            }
-            log.info('cmd: ', cmd)
-            log.info('stdin: ', result.stdin)
-            log.info('stdout: ', result.stdout)
-            log.info('stderr: ', result.stderr)
-            itemId = item["itemId"]
-            value = item["value"]
-            if ((fs.existsSync(bams_L)) && (fs.existsSync(bams_M)) && (fs.existsSync(bams_S))){
-              win.webContents.executeJavaScript('setStatus("'+itemId+'","[ Complete ] ")')
-              
-            } else {
-              win.webContents.executeJavaScript('setStatus("'+itemId+'","[ Fail ] ")')
-            }
-            q_list.pop(item)
-            win.webContents.executeJavaScript('progress_add()')
-            if ( q_list.length == 0 ){
-              win.webContents.executeJavaScript('elementDisabled(false)')
-              win.webContents.executeJavaScript('alert("Complete")')
-             }
-          }
-        );
         post_obj = {
           "items": items,
           "config": config
@@ -407,8 +372,43 @@ try {
         myWorker.postMessage(post_obj);
       }
     })
-  });
 
+  myWorker.on('message', (obj) => {
+      let result = obj['result']
+      let item = obj['item']
+      let app = obj['app']
+      let args = obj['args']
+      let bams = obj['bams']
+      let bams_L = bams['L']
+      let bams_M = bams['M']
+      let bams_S = bams['S']          
+      log.info('app: ', app)
+      log.info('args: ', args)
+      cmd = app
+      for ( let arg in args ) {
+        cmd += " " + args[arg]
+      }
+      log.info('cmd: ', cmd)
+      log.info('stdin: ', result.stdin)
+      log.info('stdout: ', result.stdout)
+      log.info('stderr: ', result.stderr)
+      itemId = item["itemId"]
+      value = item["value"]
+      if ((fs.existsSync(bams_L)) && (fs.existsSync(bams_M)) && (fs.existsSync(bams_S))){
+        win.webContents.executeJavaScript('setStatus("'+itemId+'","[ Complete ] ")')
+        
+      } else {
+        win.webContents.executeJavaScript('setStatus("'+itemId+'","[ Fail ] ")')
+      }
+      q_list.pop(item)
+      win.webContents.executeJavaScript('progress_add()')
+      if ( q_list.length == 0 ){
+        win.webContents.executeJavaScript('elementDisabled(false)')
+        win.webContents.executeJavaScript('alert("Complete")')
+      }
+    }
+  );
+});
 } catch (err) {
   log.info(err)
   app.exit()
