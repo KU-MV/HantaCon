@@ -14,13 +14,13 @@
       "target": [
         "deb"
       ],
-      "exec": "bash /opt/HantaCon/hantacon",
       "category": "Utility",
       "description": "The HanaCon was developed and maintained by a laboratory leaded by Prof. Jin-Won Song at Korea University, Republic of Korea.",
       "icon": "./build/256x256.png",
       "desktop": {
         "Icon": "/opt/HantaCon/256x256.png"
-      }
+      },
+      "afterInstall": "package.sh"
     },
     "extraFiles": [
       {
@@ -69,7 +69,8 @@
       "./worker.js",
       "./worker2.js",
       "./main.css",
-      "./img/*"
+      "./img/*",
+      "./package.sh"
     ]
   },
   "author": "Grey Ha <greytrace64@gmail.com>",
