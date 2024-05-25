@@ -80,7 +80,7 @@ parentPort.on('message', (obj) => {
         //nextstrain shell . -c "snakemake -c1"
         let app = 'bash'
         let args = [
-          '-i', '-c', config['app']['conda'], 'run', '-n', config['app']['env_name'], 'nextflow',
+          config['app']['conda'], 'run', '-n', config['app']['env_name'], 'nextflow',
           //'-log', '"'+data_path+'/nextflow.log"',
           //'-c', '"'+data_path+'/nextflow.config"',
           'run', '"' + data_path + '/main.nf"',
