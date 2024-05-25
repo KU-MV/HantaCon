@@ -145,7 +145,7 @@ try {
       },
       autoHideMenuBar: true
     });
-  
+    
     //if (process.platform === "linux") {
     //  win.icon = icon_path;
     //}
@@ -157,7 +157,8 @@ try {
     const q_list = []
     //win.webContents.executeJavaScript('document.querySelector("div.config input#basePath").value = "' + base_path +'"') 
     win.webContents.executeJavaScript('document.querySelector("div.config input#dataPath").value = "' + data_path +'"') 
-    
+    //win.webContents.openDevTools()
+
     function ref_init() {    
       const refs = fs.readdirSync(ref_path)
       for ( let ref in refs ) {

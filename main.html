@@ -204,7 +204,6 @@
     //});
 
     document.querySelector('button.run').addEventListener('click', () => {
-      console.log('test')
       file_find.runShell(chkItems());
     });
 
@@ -393,7 +392,7 @@
           let value = getValue(item.id)
           
           option = document.querySelector('div#'+item.id+' select').value
-          console.log('div.refs div#'+ option +' label#L')
+          //console.log('div.refs div#'+ option +' label#L')
           option_L = document.querySelector('div.refs div#'+ option +' label#L').textContent
           option_M = document.querySelector('div.refs div#'+ option +' label#M').textContent
           option_S = document.querySelector('div.refs div#'+ option +' label#S').textContent
@@ -428,10 +427,10 @@
     }
 
     function elementDisabled(value) {
-      console.log(value)
+      //console.log(value)
       let button_list = $('.disabled-event')
       for (let item of button_list) {
-        console.log(item)
+        //console.log(item)
         item.disabled = value
       }
     }
@@ -483,9 +482,9 @@
           item.style.display = 'none'
         }
       }
-      console.log('div.step-'+step)
+      //console.log('div.step-'+step)
       let div_option = document.querySelector('div.step-'+step)
-      console.log(div_option)
+      //console.log(div_option)
       div_option.style.display = 'block'
       
       if (step === 3) {
