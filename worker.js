@@ -25,6 +25,7 @@ parentPort.on('message', (obj) => {
         let option_M = ref_path + option_name + '/' + option['M']
         let option_S = ref_path + option_name + '/' + option['S']
         let threshold = item['threshold']
+        let indel_filter_script = data_path + '/filter_indel_with_sr.py'
         //let nextstrain_L = data_path + '/nextstrain/htv_L/data/'
         //let nextstrain_M = data_path + '/nextstrain/htv_M/data/'
         //let nextstrain_S = data_path + '/nextstrain/htv_S/data/'
@@ -90,6 +91,7 @@ parentPort.on('message', (obj) => {
           '--M', option_M,
           '--S', option_S,
           '--low-cov-threshold', threshold,
+          '--indel_filter_script', indel_filter_script
           //'--log', '"'+data_path+'/logfile.log"',
           //'-w', data_path
         ]

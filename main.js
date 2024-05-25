@@ -107,6 +107,7 @@ try {
   if (!fs.existsSync(data_path+'/nextflow.config')) fs.copyFileSync(appPath+'/nextflow.config', data_path+'/nextflow.config', mode=fs.constants.COPYFILE_EXCL);
   if (!fs.existsSync(data_path+'/consensus.nf')) fs.copyFileSync(appPath+'/consensus.nf', data_path+'/consensus.nf', mode=fs.constants.COPYFILE_EXCL);
   if (!fs.existsSync(data_path+'/nextstrain.nf')) fs.copyFileSync(appPath+'/nextstrain.nf', data_path+'/nextstrain.nf', mode=fs.constants.COPYFILE_EXCL);
+  if (!fs.existsSync(data_path+'/filter_indel_with_sr.py')) fs.copyFileSync(appPath+'/filter_indel_with_sr.py', data_path+'/filter_indel_with_sr.py', mode=fs.constants.COPYFILE_EXCL);
 
   function removeDirectory(directoryPath) {
     // Check if directory exists

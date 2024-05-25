@@ -47,7 +47,6 @@ process catFiles {
 }
 
 process extractName_l {
-    conda 'KU-ONT-Hantavirus-consensus'
     input:
         path seg
     output:
@@ -58,7 +57,6 @@ process extractName_l {
 }
 
 process extractName_m {
-    conda 'KU-ONT-Hantavirus-consensus'
     input:
         path seg
     output:
@@ -69,7 +67,6 @@ process extractName_m {
 }
 
 process extractName_s {
-    conda 'KU-ONT-Hantavirus-consensus'
     input:
         path seg
     output:
@@ -80,7 +77,6 @@ process extractName_s {
 }
 
 process mapReads {
-    conda 'KU-ONT-Hantavirus-consensus'
     publishDir "${params.outdir}", mode: 'copy'
     tag "${params.prefix}:mapReads"
 
