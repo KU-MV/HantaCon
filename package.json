@@ -14,6 +14,7 @@
       "target": [
         "deb"
       ],
+      "exec": "bash /opt/HantaCon/hantacon",
       "category": "Utility",
       "description": "The HanaCon was developed and maintained by a laboratory leaded by Prof. Jin-Won Song at Korea University, Republic of Korea.",
       "icon": "./build/256x256.png",
