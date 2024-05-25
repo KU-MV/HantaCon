@@ -1,4 +1,4 @@
-# Grey-ui
+#
 
 npm install electron@25.1.1
 npm install electron-builder@22.10.5
