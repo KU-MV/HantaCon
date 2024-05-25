@@ -19,8 +19,7 @@
       "icon": "./build/256x256.png",
       "desktop": {
         "Icon": "/opt/HantaCon/256x256.png"
-      },
-      "afterInstall": "package.sh"
+      }
     },
     "extraFiles": [
       {
@@ -69,8 +68,7 @@
       "./worker.js",
       "./worker2.js",
       "./main.css",
-      "./img/*",
-      "./package.sh"
+      "./img/*"
     ]
   },
   "author": "Grey Ha <greytrace64@gmail.com>",

@@ -320,13 +320,13 @@ try {
         'workdir': workdir,
         'run': [
           {
-            'app': config['app']['conda'],
-            'args': ['run','-n', config['app']['env_name'], 'nextflow', data_path+'/nextstrain.nf','--workdir', workdir, '--outfile', sequence_path],
+            'app': 'bash',
+            'args': ['-i','-c',config['app']['conda'], 'run','-n', config['app']['env_name'], 'nextflow', data_path+'/nextstrain.nf','--workdir', workdir, '--outfile', sequence_path],
             'workdir': data_path
           },
           {
-           'app': 'nextstrain',
-           'args': ['shell','.','-c','snakemake -c1'],
+           'app': 'bash',
+           'args': ['-i', '-c', 'nextstrain', 'shell','.','-c','snakemake -c1'],
            'workdir': workdir
           }
         ]
