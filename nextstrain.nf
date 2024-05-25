@@ -16,6 +16,6 @@ process test {
     """
     rm -f $workdir/data/sequence_origin.fasta
     mv $workdir/data/sequence.fasta $workdir/data/sequence_origin.fasta
-    nextstrain shell . mafft $workdir/data/sequence_origin.fasta > $outfile
+    mafft $workdir/data/sequence_origin.fasta > $outfile
     """
 }
