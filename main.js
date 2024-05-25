@@ -318,7 +318,7 @@ try {
         'workdir': workdir,
         'run': [
           {
-            'app': config['conda'],
+            'app': config['app']['conda'],
             'args': ['run','-n',config['app']['env_name'], 'nextflow', data_path+'/nextstrain.nf','--workdir', workdir, '--outfile', sequence_path],
             'workdir': data_path
           },
